@@ -31,7 +31,7 @@ class GreekTestKit {
 
     val philosopherName = loader.addOption(new StringOpt(true), "philosopher-name", Some('p'))
     val greekLetter = loader.addOption(new MapOpt(s => GreekLetter.parse(s)), "greek-letter", Some('g'))
-    val nationality = loader.addOption(new StringOpt("Greek"), "nationality")
+    val nationality = loader.addOption(new StringOpt().withDefault("Greek"), "nationality")
 }
 
 class ArgLoaderTest extends FunSuite {

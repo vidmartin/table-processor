@@ -35,11 +35,11 @@ class FlagOpt extends Opt[Boolean] {
 }
 
 class MapOpt[T](
-    required: Boolean,
     mapper: String => T,
-    default: Option[T] = None,
+    required: Boolean = false
 ) extends Opt[T] {
-    private var value: Option[T] = None
+    protected var default: Option[T] = None
+    protected var value: Option[T] = None
 
     override def get: T = value.orElse(default).get
     override def forceLoad(it: Iterator[String]): Unit = {
@@ -49,13 +49,18 @@ class MapOpt[T](
     override def isRequired: Boolean = required
     override def isDefined: Boolean = value.isDefined
 
-    def this(mapper: String => T, default: T) = this(false, mapper, Some(default))
-    def this(mapper: String => T) = this(false, mapper, None)
+    def withDefault(default: T): MapOpt[T] = {
+        this.default = Some(default)
+        this
+    }
 }
 
-class StringOpt(required: Boolean, default: Option[String] = None)
-extends MapOpt[String](required, s => s, default) {
-    def this(default: String) = this(false, Some(default))
+class StringOpt(required: Boolean = false)
+extends MapOpt[String](s => s, required) {
+    override def withDefault(default: String): StringOpt = {
+        this.default = Some(default)
+        this
+    }
 }
 
 // TODO: range opt
