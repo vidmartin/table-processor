@@ -1,13 +1,19 @@
 
 abstract class BaseOpt {
+    /** parses the value from the iterator of arguments (does nothing if isDefined is true) */
+    def load(it: Iterator[String]): Unit = {
+        if (!this.isDefined) {
+            this.forceLoad(it)
+        }
+    }
     /** parses the value from the iterator of arguments */
-    def load(it: Iterator[String]): Unit
+    protected def forceLoad(it: Iterator[String]): Unit
     /** whether a value was specified by the user or a default value is available */
     def hasValue: Boolean
     /** whether an error is to be thrown when hasValue returns false */
     def isRequired: Boolean
-    /** whether a value was specified by the user */
-    def isSpecified: Boolean
+    /** whether a value for this argument is fully defined */
+    def isDefined: Boolean
 }
 
 abstract class Opt[T] extends BaseOpt {
@@ -19,16 +25,13 @@ class FlagOpt extends Opt[Boolean] {
     private var flagSet: Boolean = false
 
     override def get: Boolean = flagSet
-    override def load(it: Iterator[String]): Unit = {
-        if (flagSet) {
-            throw new Exception() // TODO: more specific exception
-        }
+    override def forceLoad(it: Iterator[String]): Unit = {
         flagSet = true
     }
 
     override def hasValue: Boolean = true
     override def isRequired: Boolean = false
-    override def isSpecified: Boolean = flagSet
+    override def isDefined: Boolean = flagSet
 }
 
 class MapOpt[T](
@@ -39,20 +42,12 @@ class MapOpt[T](
     private var value: Option[T] = None
 
     override def get: T = value.orElse(default).get
-    override def load(it: Iterator[String]): Unit = {
-        if (this.isSpecified) {
-            throw new Exception() // TODO: more specific exception
-        }
-
-        if (it.hasNext) {
-            value = Some(mapper(it.next()))
-        } else {
-            throw new Exception() // TODO: more specific exception
-        }
+    override def forceLoad(it: Iterator[String]): Unit = {
+        value = Some(mapper(it.next()))
     }
     override def hasValue: Boolean = value.isDefined || default.isDefined
     override def isRequired: Boolean = required
-    override def isSpecified: Boolean = value.isDefined
+    override def isDefined: Boolean = value.isDefined
 
     def this(mapper: String => T, default: T) = this(false, mapper, Some(default))
 }
