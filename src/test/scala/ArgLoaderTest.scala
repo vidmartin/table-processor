@@ -164,4 +164,12 @@ class ArgLoaderTest extends FunSuite {
             ArgLoader.load(kit.opts, Array("--greek-letter", "delta"))
         }
     }
+
+    test("greek8") {
+        val kit = new GreekTestKit
+
+        assertThrows[FormatArgException] {
+            ArgLoader.load(kit.opts, Array("-p", "Socrates", "--greek-letter", "sigma"))
+        }
+    }
 }

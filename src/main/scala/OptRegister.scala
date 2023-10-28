@@ -35,7 +35,7 @@ abstract class ParseOptRegister[T] extends OptRegister[T] {
     protected var default: Option[T] = None
     protected var value: Option[T] = None
 
-    def parse(s: String): T
+    protected def parse(s: String): T
     override def get: T = value.orElse(default).get
     override def forceLoad(it: Iterator[String]): Unit = {
         value = Some(parse(it.next()))
@@ -63,7 +63,9 @@ class EnumOptRegister[T <: EnumCase](companion: EnumCompanion[T]) extends ParseO
         this.default = Some(default)
         this
     }
-    override def parse(s: String): T = companion.parse(s).get
+    override def parse(s: String): T = companion.parse(s).getOrElse(
+        throw new FormatArgException(f"invalid value ${s} - expected one of {${companion.all.map(c => c.name).mkString(", ")}}")
+    )
 }
 
 // TODO: range opt

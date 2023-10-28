@@ -28,6 +28,7 @@ private class ArgLoader(registry: OptRegistry) {
             opt.load(it)
         } catch {
             case e: NoSuchElementException => throw new IncompleteArgException(f"no value provided for argument ${curr}")
+            case e: FormatArgException => throw new FormatArgException(f"format error for ${curr} - ${e.getMessage()}")
         }
     }
 
