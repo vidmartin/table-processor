@@ -29,11 +29,17 @@ class ArgLoader {
         while (it.hasNext) {
             this.loadNext(it)
         }
+
+        val missingOpts = getMissingOpts()
+        if (missingOpts.nonEmpty) {
+            throw new MissingArgException(
+                f"the following required args were not specified: ${missingOpts.mkString(", ")}"
+            )
+        }
     }
 
     private def loadNext(it: Iterator[String]): Unit = {
         val curr = it.next()
-
         val opt: BaseOpt = this.matchOpt(curr);
 
         if (opt.isDefined) {
@@ -56,5 +62,13 @@ class ArgLoader {
         } else {
             throw new UnexpectedPositionArgException(f"unexpected positional argument '${optString}'")
         }
+    }
+
+    private def getMissingOpts(): Array[String] = {
+        this.longNameMap.iterator.filter(
+            { case (key, opt) => opt.isRequired && !opt.hasValue }
+        ).map(
+            { case (key, _) => key }
+        ).toArray
     }
 }

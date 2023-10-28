@@ -150,4 +150,12 @@ class ArgLoaderTest extends FunSuite {
             kit.loader.load(Array("-p", "Pythagoras", "--philosopher-name", "Thales"))
         }
     }
+
+    test("greek7") {
+        val kit = new GreekTestKit
+
+        assertThrows[MissingArgException] {
+            kit.loader.load(Array("--greek-letter", "delta"))
+        }
+    }
 }
