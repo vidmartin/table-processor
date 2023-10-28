@@ -26,9 +26,12 @@ object GreekLetter {
     }
 }
 
-class MiscTestKit {
+class GreekTestKit {
     val loader = new ArgLoader();
 
+    val philosopherName = loader.addOption(new StringOpt(true), "philosopher-name", Some('p'))
+    val greekLetter = loader.addOption(new MapOpt(s => GreekLetter.parse(s)), "greek-letter", Some('g'))
+    val nationality = loader.addOption(new StringOpt("Greek"), "nationality")
 }
 
 class ArgLoaderTest extends FunSuite {
@@ -88,6 +91,63 @@ class ArgLoaderTest extends FunSuite {
 
         assertThrows[MultipleOccurencesArgException] {
             kit.loader.load(Array("--alpha", "-a"))
+        }
+    }
+
+    test("greek1") {
+        val kit = new GreekTestKit
+
+        kit.loader.load(Array("-p", "Aristotle", "-g", "alpha"))
+
+        assert(kit.philosopherName.get == "Aristotle")
+        assert(kit.greekLetter.get == GreekLetter.ALPHA)
+        assert(kit.nationality.get == "Greek")
+    }
+
+    test("greek2") {
+        val kit = new GreekTestKit
+
+        kit.loader.load(Array("--philosopher-name", "Plato"))
+
+        assert(kit.philosopherName.get == "Plato")
+        assertThrows[NoSuchElementException] { kit.greekLetter.get }
+        assert(kit.greekLetter.hasValue == false)
+        assert(kit.nationality.get == "Greek")
+    }
+
+    test("greek3") {
+        val kit = new GreekTestKit
+
+        kit.loader.load(Array("--greek-letter", "EPsiLon", "--philosopher-name", "Epictetus"))
+
+        assert(kit.greekLetter.get == GreekLetter.EPSILON)
+        assert(kit.philosopherName.get == "Epictetus")
+        assert(kit.nationality.get == "Greek")
+    }
+
+    test("greek4") {
+        val kit = new GreekTestKit
+
+        kit.loader.load(Array("-p", "MarcusAurelius", "--nationality", "Roman"))
+
+        assert(kit.greekLetter.hasValue == false)
+        assert(kit.philosopherName.get == "MarcusAurelius")
+        assert(kit.nationality.get == "Roman")
+    }
+
+    test("greek5") {
+        val kit = new GreekTestKit
+
+        assertThrows[MissingValueArgException] {
+            kit.loader.load(Array("-g", "beta", "-p"))
+        }
+    }
+
+    test("greek6") {
+        val kit = new GreekTestKit
+
+        assertThrows[MultipleOccurencesArgException] {
+            kit.loader.load(Array("-p", "Pythagoras", "--philosopher-name", "Thales"))
         }
     }
 }

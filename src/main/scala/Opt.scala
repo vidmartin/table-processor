@@ -50,6 +50,7 @@ class MapOpt[T](
     override def isDefined: Boolean = value.isDefined
 
     def this(mapper: String => T, default: T) = this(false, mapper, Some(default))
+    def this(mapper: String => T) = this(false, mapper, None)
 }
 
 class StringOpt(required: Boolean, default: Option[String] = None)
