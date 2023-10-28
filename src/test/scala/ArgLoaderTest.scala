@@ -2,71 +2,77 @@
 import org.scalatest.FunSuite
 
 class FlagsTestKit {
-    val loader = new ArgLoader()
-        
-    val a = loader.addOption(new FlagOpt, "alpha", Some('a'))
-    val b = loader.addOption(new FlagOpt, "beta", Some('b'))
-    val c = loader.addOption(new FlagOpt, "gamma", Some('c'))
+    val opts = new OptRegistry
+
+    val a = opts.addOption(new CommandLineOption(
+        new FlagOptRegister, "alpha", Some('a'), ""
+    ))
+    val b = opts.addOption(new CommandLineOption(
+        new FlagOptRegister, "beta", Some('b'), ""
+    ))
+    val c = opts.addOption(new CommandLineOption(
+        new FlagOptRegister, "gamma", Some('c'), ""
+    ))
 }
 
-sealed abstract class GreekLetter;
-object GreekLetter {
-    object ALPHA extends GreekLetter
-    object BETA extends GreekLetter
-    object GAMMA extends GreekLetter
-    object DELTA extends GreekLetter
-    object EPSILON extends GreekLetter
+sealed case class GreekLetter(override val name: String) extends EnumCase
+object GreekLetter extends EnumCompanion[GreekLetter] {
+    object ALPHA extends GreekLetter("alpha")
+    object BETA extends GreekLetter("beta")
+    object GAMMA extends GreekLetter("gamma")
+    object DELTA extends GreekLetter("delta")
+    object EPSILON extends GreekLetter("epsilon")
 
-    def parse(s: String) = s.toLowerCase() match {
-        case "alpha" => ALPHA
-        case "beta" => BETA
-        case "gamma" => GAMMA
-        case "delta" => DELTA
-        case "epsilon" => EPSILON
-    }
+    def all: Array[GreekLetter] = Array(ALPHA, BETA, GAMMA, DELTA, EPSILON)
 }
 
 class GreekTestKit {
-    val loader = new ArgLoader();
+    val opts = new OptRegistry
 
-    val philosopherName = loader.addOption(new StringOpt(true), "philosopher-name", Some('p'))
-    val greekLetter = loader.addOption(new MapOpt(s => GreekLetter.parse(s)), "greek-letter", Some('g'))
-    val nationality = loader.addOption(new StringOpt().withDefault("Greek"), "nationality")
+    val philosopherName = opts.addOption(new RequiredCommandLineOption(
+        new StringOptRegister, "philosopher-name", Some('p'), ""
+    ))
+    val greekLetter = opts.addOption(new CommandLineOption(
+        new EnumOptRegister(GreekLetter), "greek-letter", Some('g'), ""
+    ))
+    val nationality = opts.addOption(new CommandLineOption(
+        new StringOptRegister().withDefault("Greek"), "nationality", None, ""
+    ))
 }
 
 class ArgLoaderTest extends FunSuite {
     test("flags1") {
         val kit = new FlagsTestKit
-        kit.loader.load(Array("--alpha", "-c"))
+        ArgLoader.load(kit.opts, Array("--alpha", "-c"))
         
-        assert(kit.a.get == true)
-        assert(kit.b.get == false)
-        assert(kit.c.get == true)
+        assert(kit.a.optRegister.get == true)
+        assert(kit.b.optRegister.get == false)
+        assert(kit.c.optRegister.get == true)
     }
 
     test("flags2") {
         val kit = new FlagsTestKit
-        kit.loader.load(new Array(0))
+        ArgLoader.load(kit.opts, new Array(0))
 
-        assert(kit.a.get == false)
-        assert(kit.b.get == false)
-        assert(kit.c.get == false)
+        assert(kit.a.optRegister.get == false)
+        assert(kit.b.optRegister.get == false)
+        assert(kit.c.optRegister.get == false)
     }
 
     test("flags3") {
         val kit = new FlagsTestKit
-        kit.loader.load(Array("--beta"))
+        ArgLoader.load(kit.opts, Array("--beta"))
 
-        assert(kit.a.get == false)
-        assert(kit.b.get == true)
-        assert(kit.c.get == false)
+        assert(kit.a.optRegister.get == false)
+        assert(kit.b.optRegister.get == true)
+        assert(kit.c.optRegister.get == false)
     }
 
     test("flags4") {
         val kit = new FlagsTestKit
 
         assertThrows[UnexpectedPositionArgException] {
-            kit.loader.load(Array("--alpha", "hello"))
+            ArgLoader.load(kit.opts, Array("--alpha", "hello"))
         }
     }
 
@@ -74,7 +80,7 @@ class ArgLoaderTest extends FunSuite {
         val kit = new FlagsTestKit
 
         assertThrows[UnknownArgException] {
-            kit.loader.load(Array("--alpha", "--sigma"))
+            ArgLoader.load(kit.opts, Array("--alpha", "--sigma"))
         }
     }
 
@@ -82,7 +88,7 @@ class ArgLoaderTest extends FunSuite {
         val kit = new FlagsTestKit
 
         assertThrows[MultipleOccurencesArgException] {
-            kit.loader.load(Array("--alpha", "--alpha"))
+            ArgLoader.load(kit.opts, Array("--alpha", "--alpha"))
         }
     }
 
@@ -90,56 +96,56 @@ class ArgLoaderTest extends FunSuite {
         val kit = new FlagsTestKit
 
         assertThrows[MultipleOccurencesArgException] {
-            kit.loader.load(Array("--alpha", "-a"))
+            ArgLoader.load(kit.opts, Array("--alpha", "-a"))
         }
     }
 
     test("greek1") {
         val kit = new GreekTestKit
 
-        kit.loader.load(Array("-p", "Aristotle", "-g", "alpha"))
+        ArgLoader.load(kit.opts, Array("-p", "Aristotle", "-g", "alpha"))
 
-        assert(kit.philosopherName.get == "Aristotle")
-        assert(kit.greekLetter.get == GreekLetter.ALPHA)
-        assert(kit.nationality.get == "Greek")
+        assert(kit.philosopherName.optRegister.get == "Aristotle")
+        assert(kit.greekLetter.optRegister.get == GreekLetter.ALPHA)
+        assert(kit.nationality.optRegister.get == "Greek")
     }
 
     test("greek2") {
         val kit = new GreekTestKit
 
-        kit.loader.load(Array("--philosopher-name", "Plato"))
+        ArgLoader.load(kit.opts, Array("--philosopher-name", "Plato"))
 
-        assert(kit.philosopherName.get == "Plato")
-        assertThrows[NoSuchElementException] { kit.greekLetter.get }
-        assert(kit.greekLetter.hasValue == false)
-        assert(kit.nationality.get == "Greek")
+        assert(kit.philosopherName.optRegister.get == "Plato")
+        assertThrows[NoSuchElementException] { kit.greekLetter.optRegister.get }
+        assert(kit.greekLetter.optRegister.hasValue == false)
+        assert(kit.nationality.optRegister.get == "Greek")
     }
 
     test("greek3") {
         val kit = new GreekTestKit
 
-        kit.loader.load(Array("--greek-letter", "EPsiLon", "--philosopher-name", "Epictetus"))
+        ArgLoader.load(kit.opts, Array("--greek-letter", "EPsiLon", "--philosopher-name", "Epictetus"))
 
-        assert(kit.greekLetter.get == GreekLetter.EPSILON)
-        assert(kit.philosopherName.get == "Epictetus")
-        assert(kit.nationality.get == "Greek")
+        assert(kit.greekLetter.optRegister.get == GreekLetter.EPSILON)
+        assert(kit.philosopherName.optRegister.get == "Epictetus")
+        assert(kit.nationality.optRegister.get == "Greek")
     }
 
     test("greek4") {
         val kit = new GreekTestKit
 
-        kit.loader.load(Array("-p", "MarcusAurelius", "--nationality", "Roman"))
+        ArgLoader.load(kit.opts, Array("-p", "MarcusAurelius", "--nationality", "Roman"))
 
-        assert(kit.greekLetter.hasValue == false)
-        assert(kit.philosopherName.get == "MarcusAurelius")
-        assert(kit.nationality.get == "Roman")
+        assert(kit.greekLetter.optRegister.hasValue == false)
+        assert(kit.philosopherName.optRegister.get == "MarcusAurelius")
+        assert(kit.nationality.optRegister.get == "Roman")
     }
 
     test("greek5") {
         val kit = new GreekTestKit
 
         assertThrows[IncompleteArgException] {
-            kit.loader.load(Array("-g", "beta", "-p"))
+            ArgLoader.load(kit.opts, Array("-g", "beta", "-p"))
         }
     }
 
@@ -147,7 +153,7 @@ class ArgLoaderTest extends FunSuite {
         val kit = new GreekTestKit
 
         assertThrows[MultipleOccurencesArgException] {
-            kit.loader.load(Array("-p", "Pythagoras", "--philosopher-name", "Thales"))
+            ArgLoader.load(kit.opts, Array("-p", "Pythagoras", "--philosopher-name", "Thales"))
         }
     }
 
@@ -155,7 +161,7 @@ class ArgLoaderTest extends FunSuite {
         val kit = new GreekTestKit
 
         assertThrows[MissingArgException] {
-            kit.loader.load(Array("--greek-letter", "delta"))
+            ArgLoader.load(kit.opts, Array("--greek-letter", "delta"))
         }
     }
 }

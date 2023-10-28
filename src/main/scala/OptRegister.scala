@@ -1,5 +1,5 @@
 
-abstract class BaseOpt {
+abstract class BaseOptRegister {
     /** parses the value from the iterator of arguments (does nothing if isDefined is true) */
     def load(it: Iterator[String]): Unit = {
         if (!this.isDefined) {
@@ -10,18 +10,16 @@ abstract class BaseOpt {
     protected def forceLoad(it: Iterator[String]): Unit
     /** whether a value was specified by the user or a default value is available */
     def hasValue: Boolean
-    /** whether an error is to be thrown when hasValue returns false */
-    def isRequired: Boolean
     /** whether a value for this argument is fully defined */
     def isDefined: Boolean
 }
 
-abstract class Opt[T] extends BaseOpt {
+abstract class OptRegister[T] extends BaseOptRegister {
     /** returns the parsed value or a default value; if neither is available, throw exception */
     def get: T
 }
 
-class FlagOpt extends Opt[Boolean] {
+class FlagOptRegister extends OptRegister[Boolean] {
     private var flagSet: Boolean = false
 
     override def get: Boolean = flagSet
@@ -30,37 +28,42 @@ class FlagOpt extends Opt[Boolean] {
     }
 
     override def hasValue: Boolean = true
-    override def isRequired: Boolean = false
     override def isDefined: Boolean = flagSet
 }
 
-class MapOpt[T](
-    mapper: String => T,
-    required: Boolean = false
-) extends Opt[T] {
+abstract class ParseOptRegister[T] extends OptRegister[T] {
     protected var default: Option[T] = None
     protected var value: Option[T] = None
 
+    def parse(s: String): T
     override def get: T = value.orElse(default).get
     override def forceLoad(it: Iterator[String]): Unit = {
-        value = Some(mapper(it.next()))
+        value = Some(parse(it.next()))
     }
     override def hasValue: Boolean = value.isDefined || default.isDefined
-    override def isRequired: Boolean = required
     override def isDefined: Boolean = value.isDefined
 
-    def withDefault(default: T): MapOpt[T] = {
+    def withDefault(default: T): ParseOptRegister[T] = {
         this.default = Some(default)
         this
     }
 }
 
-class StringOpt(required: Boolean = false)
-extends MapOpt[String](s => s, required) {
-    override def withDefault(default: String): StringOpt = {
+class StringOptRegister extends ParseOptRegister[String] {
+    override def withDefault(default: String): StringOptRegister = {
         this.default = Some(default)
         this
     }
+
+    override def parse(s: String): String = s
+}
+
+class EnumOptRegister[T <: EnumCase](companion: EnumCompanion[T]) extends ParseOptRegister[T] {
+    override def withDefault(default: T): EnumOptRegister[T] = {
+        this.default = Some(default)
+        this
+    }
+    override def parse(s: String): T = companion.parse(s).get
 }
 
 // TODO: range opt

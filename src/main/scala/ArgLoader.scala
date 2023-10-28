@@ -1,28 +1,7 @@
 
 import scala.collection.mutable.HashMap
 
-class ArgLoader {
-    private val longNameMap: HashMap[String, BaseOpt] = new HashMap()
-    private val shortNameMap: HashMap[Char, BaseOpt] = new HashMap()
-
-    def addOption[T <: BaseOpt](
-        opt: T,
-        longName: String,
-        shortName: Option[Char] = None,
-    ): T = {
-        if (longNameMap.contains(longName)) {
-            throw new AlreadyExistsArgException(f"argument --${longName} was already added")
-        }
-        if (shortName.map(c => shortNameMap.contains(c)).getOrElse(false)) {
-            throw new AlreadyExistsArgException(f"argument -${shortName} was already added")
-        }
-
-        longNameMap.addOne((longName, opt))
-        shortName.foreach(c => shortNameMap.addOne((c, opt)))
-
-        return opt
-    }
-
+private class ArgLoader(registry: OptRegistry) {
     def load(args: Array[String]): Unit = {
         val it = args.iterator
 
@@ -40,7 +19,7 @@ class ArgLoader {
 
     private def loadNext(it: Iterator[String]): Unit = {
         val curr = it.next()
-        val opt: BaseOpt = this.matchOpt(curr);
+        val opt: BaseOptRegister = this.matchOpt(curr);
 
         if (opt.isDefined) {
             throw new MultipleOccurencesArgException(f"cannot redefine argument ${curr}")
@@ -52,23 +31,29 @@ class ArgLoader {
         }
     }
 
-    private def matchOpt(optString: String): BaseOpt = {
+    private def matchOpt(optString: String): BaseOptRegister = {
         if (optString.startsWith("--") && optString.length() > 2) {
             val key = optString.substring(2)
-            longNameMap.getOrElse(key, throw new UnknownArgException(f"unknown argument ${optString}"))
+            registry.getByLongName(key).getOrElse(throw new UnknownArgException(f"unknown argument ${optString}")).optRegister
         } else if (optString.startsWith("-") && optString.length() > 1) {
             val key = optString(1)
-            shortNameMap.getOrElse(key, throw new UnknownArgException(f"unknown argument ${optString}"))
+            registry.getByShortName(key).getOrElse(throw new UnknownArgException(f"unknown argument ${optString}")).optRegister
         } else {
             throw new UnexpectedPositionArgException(f"unexpected positional argument '${optString}'")
         }
     }
 
     private def getMissingOpts(): Array[String] = {
-        this.longNameMap.iterator.filter(
-            { case (key, opt) => opt.isRequired && !opt.hasValue }
+        registry.iterator.filter(
+            { case cliOpt => cliOpt.isRequired && !cliOpt.optRegister.hasValue }
         ).map(
-            { case (key, _) => key }
+            { case cliOpt => cliOpt.longName }
         ).toArray
+    }
+}
+
+object ArgLoader {
+    def load(registry: OptRegistry, args: Array[String]): Unit = {
+        new ArgLoader(registry).load(args)
     }
 }

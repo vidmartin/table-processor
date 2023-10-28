@@ -1,28 +1,47 @@
 
 object Main extends App {
     def loadArgs() {
-        val loader = new ArgLoader
-        
-        val inputFile = loader.addOption(new StringOpt(true), "input-file", Some('i'))
-        val separator = loader.addOption(new StringOpt().withDefault(","), "separator")
-        val format = loader.addOption(
-            new MapOpt[SupportedFormat](s => s match {
-                case "md" => SupportedFormat.MD
-                case "csv" => SupportedFormat.CSV
-            }).withDefault(SupportedFormat.CSV),
-            "format"
-        )
-        val outputSeparator = loader.addOption(new StringOpt().withDefault(","), "output-separator")
-        val headers = loader.addOption(new FlagOpt, "headers")
-        val outputFile = loader.addOption(new StringOpt(), "output-file")
-        val stdout = loader.addOption(new FlagOpt, "stdout")
-        val help = loader.addOption(new FlagOpt, "help", Some('h'))
+        val opts = new OptRegistry
 
-        loader.load(this.args)
+        val inputFile = opts.addOption(new RequiredCommandLineOption(
+            new StringOptRegister, "input-file", Some('i'),
+            "the path to the file to be processed"
+        ))
+        val separator = opts.addOption(new CommandLineOption(
+            new StringOptRegister().withDefault(","), "separator", None,
+            "the separator to be used for parsing the input CSV file"
+        ))
+        val format = opts.addOption(new CommandLineOption(
+            new EnumOptRegister(SupportedFormat).withDefault(SupportedFormat.CSV),
+            "format", None,
+            "the format of the output file"
+        ))
+        val outputSeparator = opts.addOption(new CommandLineOption(
+            new StringOptRegister().withDefault(","), "output-separator", None,
+            "the separator to be used for the output file, in case the selected format is CSV"
+        ))
+        val headers = opts.addOption(new CommandLineOption(
+            new FlagOptRegister, "headers", None,
+            "whether to include header row in the output"
+        ))
+        val outputFile = opts.addOption(new CommandLineOption(
+            new StringOptRegister, "output-file", Some('o'),
+            "the file to write the output into; if unspecified, write to STDOUT"
+        ))
+        val stdout = opts.addOption(new CommandLineOption(
+            new FlagOptRegister, "stdout", None,
+            "whether to write the output to STDOUT; if output file is not specified, this is considered to be true implicitly"
+        ))
+        val help = opts.addOption(new CommandLineOption(
+            new FlagOptRegister, "help", Some('h'),
+            "when specified, don't do anything, just print help and exit"
+        ))
 
-        println(if (inputFile.hasValue) f"input file: ${inputFile.get}" else "input file unspecified")
-        println(if (separator.hasValue) f"separator: ${separator.get}" else "separator unspecified")
-        println(if (format.hasValue) f"format: ${format.get}" else "format unspecified")
+        ArgLoader.load(opts, this.args)
+
+        println(if (inputFile.optRegister.hasValue) f"input file: ${inputFile.optRegister.get}" else "input file unspecified")
+        println(if (separator.optRegister.hasValue) f"separator: ${separator.optRegister.get}" else "separator unspecified")
+        println(if (format.optRegister.hasValue) f"format: ${format.optRegister.get}" else "format unspecified")
     }
 
     println("Hello, World!")
