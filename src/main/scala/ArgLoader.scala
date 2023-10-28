@@ -25,27 +25,36 @@ class ArgLoader {
 
     def load(args: Array[String]): Unit = {
         val it = args.iterator
+
         while (it.hasNext) {
-            val curr = it.next()
-            val opt: BaseOpt = if (curr.startsWith("--") && curr.length() > 2) {
-                val key = curr.substring(2)
-                longNameMap.getOrElse(key, throw new UnknownArgException(f"unknown argument ${curr}"))
-            } else if (curr.startsWith("-") && curr.length() > 1) {
-                val key = curr(1)
-                shortNameMap.getOrElse(curr(1), throw new UnknownArgException(f"unknown argument ${curr}"))
-            } else {
-                throw new UnexpectedPositionArgException(f"unexpected positional argument '${curr}'")
-            }
+            this.loadNext(it)
+        }
+    }
 
-            if (opt.isDefined) {
-                throw new MultipleOccurencesArgException(f"cannot redefine argument ${curr}")
-            }
+    private def loadNext(it: Iterator[String]): Unit = {
+        val curr = it.next()
 
-            try {
-                opt.load(it)
-            } catch {
-                case e: NoSuchElementException => throw new MissingValueArgException(f"no value provided for argument ${curr}")
-            }
+        val opt: BaseOpt = this.matchOpt(curr);
+
+        if (opt.isDefined) {
+            throw new MultipleOccurencesArgException(f"cannot redefine argument ${curr}")
+        }
+        try {
+            opt.load(it)
+        } catch {
+            case e: NoSuchElementException => throw new IncompleteArgException(f"no value provided for argument ${curr}")
+        }
+    }
+
+    private def matchOpt(optString: String): BaseOpt = {
+        if (optString.startsWith("--") && optString.length() > 2) {
+            val key = optString.substring(2)
+            longNameMap.getOrElse(key, throw new UnknownArgException(f"unknown argument ${optString}"))
+        } else if (optString.startsWith("-") && optString.length() > 1) {
+            val key = optString(1)
+            shortNameMap.getOrElse(key, throw new UnknownArgException(f"unknown argument ${optString}"))
+        } else {
+            throw new UnexpectedPositionArgException(f"unexpected positional argument '${optString}'")
         }
     }
 }

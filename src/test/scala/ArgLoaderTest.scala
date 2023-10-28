@@ -138,7 +138,7 @@ class ArgLoaderTest extends FunSuite {
     test("greek5") {
         val kit = new GreekTestKit
 
-        assertThrows[MissingValueArgException] {
+        assertThrows[IncompleteArgException] {
             kit.loader.load(Array("-g", "beta", "-p"))
         }
     }

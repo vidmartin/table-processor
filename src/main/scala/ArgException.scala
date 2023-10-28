@@ -4,4 +4,5 @@ class MultipleOccurencesArgException(message: String) extends ArgException(messa
 class AlreadyExistsArgException(message: String) extends ArgException(message)
 class UnexpectedPositionArgException(message: String) extends ArgException(message)
 class UnknownArgException(message: String) extends ArgException(message)
-class MissingValueArgException(message: String) extends ArgException(message)
+class IncompleteArgException(message: String) extends ArgException(message)
+class MissingArgException(message: String) extends ArgException(message)
