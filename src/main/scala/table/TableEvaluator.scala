@@ -9,7 +9,7 @@ abstract class BaseTableEvaluator {
     def evaluateTable(table: Table[TableCell]): Table[ValueTableCell]
 }
 
-class TableEvaluator extends BaseTableEvaluator {
+object TableEvaluator extends BaseTableEvaluator {
     override def evaluateTable(table: Table[TableCell]): Table[ValueTableCell] = {
         val cache = new HashMapMut[TableCellPosition, ValueTableCell]
 
