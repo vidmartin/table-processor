@@ -2,15 +2,15 @@
 package table
 
 abstract class TableCell {
-    def evaluate(referenceResolver: TableCellPosition => TableCell): TableCellValue
+    def evaluate(referenceResolver: TableCellPosition => TableCellValue): TableCellValue
 }
 
 case class ValueTableCell(value: TableCellValue) extends TableCell {
-    override def evaluate(referenceResolver: TableCellPosition => TableCell): TableCellValue = value
+    override def evaluate(referenceResolver: TableCellPosition => TableCellValue): TableCellValue = value
 }
 
 case class FormulaTableCell(formula: String) extends TableCell {
-    override def evaluate(referenceResolver: TableCellPosition => TableCell): TableCellValue = ???
+    override def evaluate(referenceResolver: TableCellPosition => TableCellValue): TableCellValue = ???
 }
 
 object TableCell {
