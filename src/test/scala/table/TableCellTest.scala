@@ -12,9 +12,9 @@ class TableCellTest extends FunSuite {
     }
 
     test("test2") {
-        assert(TableCell.parse("") == Some(EmptyTableCell))
-        assert(TableCell.parse("    ") == Some(EmptyTableCell))
-        assert(TableCell.parse("1234") == Some(IntegerTableCell(1234)))
+        assert(TableCell.parse("") == Some(ValueTableCell(EmptyTableCellValue)))
+        assert(TableCell.parse("    ") == Some(ValueTableCell(EmptyTableCellValue)))
+        assert(TableCell.parse("1234") == Some(ValueTableCell(IntegerTableCellValue(1234))))
         assert(TableCell.parse("=53*A1") == Some(FormulaTableCell("53*A1")))
     }
 }
