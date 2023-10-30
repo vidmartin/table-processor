@@ -1,4 +1,6 @@
 
+package tableReader
+
 import org.scalatest.FunSuite
 import tableReader.CsvReader
 import scala.io.Source
