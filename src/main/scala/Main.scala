@@ -1,6 +1,6 @@
 
 object Main extends App {
-    def loadArgs() {
+    def loadOpts(): Opts = {
         val opts = new OptRegistry
 
         val inputFile = opts.addOption(new RequiredCommandLineOption(
@@ -39,11 +39,25 @@ object Main extends App {
 
         ArgLoader.load(opts, this.args)
 
-        println(if (inputFile.optRegister.hasValue) f"input file: ${inputFile.optRegister.get}" else "input file unspecified")
-        println(if (separator.optRegister.hasValue) f"separator: ${separator.optRegister.get}" else "separator unspecified")
-        println(if (format.optRegister.hasValue) f"format: ${format.optRegister.get}" else "format unspecified")
+        return new Opts(
+            inputFile = inputFile.optRegister.get,
+            separator = separator.optRegister.get,
+            format = format.optRegister.get,
+            outputSeparator = outputSeparator.optRegister.get,
+            headers = headers.optRegister.get,
+            outputFile = outputFile.optRegister.getOptional,
+            stdout = stdout.optRegister.get,
+            help = help.optRegister.get,
+            filters = List(),
+            range = None
+        )
     }
 
-    println("Hello, World!")
-    loadArgs()
+    val opts = loadOpts()
+
+    if (opts.help) {
+        // TODO: show help and exit
+    }
+
+    println(f"loading file ${opts.inputFile}")
 }

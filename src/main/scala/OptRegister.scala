@@ -16,13 +16,14 @@ abstract class BaseOptRegister {
 
 abstract class OptRegister[T] extends BaseOptRegister {
     /** returns the parsed value or a default value; if neither is available, throw exception */
-    def get: T
+    def get: T = getOptional.get
+    def getOptional: Option[T]
 }
 
 class FlagOptRegister extends OptRegister[Boolean] {
     private var flagSet: Boolean = false
 
-    override def get: Boolean = flagSet
+    override def getOptional: Option[Boolean] = Some(flagSet)
     override def forceLoad(it: Iterator[String]): Unit = {
         flagSet = true
     }
@@ -36,7 +37,7 @@ abstract class ParseOptRegister[T] extends OptRegister[T] {
     protected var value: Option[T] = None
 
     protected def parse(s: String): T
-    override def get: T = value.orElse(default).get
+    override def getOptional: Option[T] = value.orElse(default)
     override def forceLoad(it: Iterator[String]): Unit = {
         value = Some(parse(it.next()))
     }
