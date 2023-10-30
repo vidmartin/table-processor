@@ -9,7 +9,7 @@ case class CsvConfig(
 )
 
 class CsvReader(input: Source, config: CsvConfig) extends TableReader {
-    val lines = input.getLines().filter(l => !l.isBlank())
+    val lines = input.getLines().filter(l => !l.forall(c => c.isWhitespace))
 
     override def hasNext: Boolean = lines.hasNext
     

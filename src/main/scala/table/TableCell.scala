@@ -15,7 +15,7 @@ case class FormulaTableCell(formula: String) extends TableCell {
 
 object TableCell {
     def parse(s: String): Option[TableCell] = {
-        if (s.isBlank()) {
+        if (s.forall(c => c.isWhitespace)) {
             Some(ValueTableCell(EmptyTableCellValue))
         } else if (s.iterator.forall(c => c.isDigit)) {
             Some(ValueTableCell(IntegerTableCellValue(s.toInt)))
