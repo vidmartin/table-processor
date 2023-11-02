@@ -21,6 +21,7 @@ class TableEvaluatorTest extends FunSuite {
                         case (IntegerTableCellValue(ai), IntegerTableCellValue(bi)) => IntegerTableCellValue(ai - bi)
                     }
                 }
+                override def dependsOn = Array(TableCellPosition.parse("E5").get, TableCellPosition.parse("F6").get)
             },
             new TableCell {
                 override def evaluate(referenceResolver: TableCellPosition => TableCellValue): TableCellValue = {
@@ -30,6 +31,7 @@ class TableEvaluatorTest extends FunSuite {
                         case (IntegerTableCellValue(ai), IntegerTableCellValue(bi)) => IntegerTableCellValue(ai * bi)
                     }
                 }
+                override def dependsOn = Array(TableCellPosition.parse("B2").get, TableCellPosition.parse("D4").get)
             },
             new TableCell {
                 override def evaluate(referenceResolver: TableCellPosition => TableCellValue): TableCellValue = {
@@ -39,6 +41,7 @@ class TableEvaluatorTest extends FunSuite {
                         case (IntegerTableCellValue(ai), IntegerTableCellValue(bi)) => IntegerTableCellValue(ai + bi)
                     }
                 }
+                override def dependsOn = Array(TableCellPosition.parse("B2").get, TableCellPosition.parse("D4").get)
             },
             ValueTableCell(EmptyTableCellValue),
         )
@@ -75,6 +78,7 @@ class TableEvaluatorTest extends FunSuite {
                         case (IntegerTableCellValue(ai), IntegerTableCellValue(bi)) => IntegerTableCellValue(ai - bi)
                     }
                 }
+                override def dependsOn = Array(TableCellPosition.parse("E5").get, TableCellPosition.parse("F6").get)
             },
             new TableCell {
                 override def evaluate(referenceResolver: TableCellPosition => TableCellValue): TableCellValue = {
@@ -84,6 +88,7 @@ class TableEvaluatorTest extends FunSuite {
                         case (IntegerTableCellValue(ai), IntegerTableCellValue(bi)) => IntegerTableCellValue(ai * bi)
                     }
                 }
+                override def dependsOn = Array(TableCellPosition.parse("B2").get, TableCellPosition.parse("D4").get)
             },
             new TableCell {
                 override def evaluate(referenceResolver: TableCellPosition => TableCellValue): TableCellValue = {
@@ -93,6 +98,7 @@ class TableEvaluatorTest extends FunSuite {
                         case (IntegerTableCellValue(ai), IntegerTableCellValue(bi)) => IntegerTableCellValue(ai + bi)
                     }
                 }
+                override def dependsOn = Array(TableCellPosition.parse("E2").get, TableCellPosition.parse("D4").get)
             },
             ValueTableCell(EmptyTableCellValue),
         )
@@ -116,6 +122,7 @@ class TableEvaluatorTest extends FunSuite {
                 override def evaluate(referenceResolver: TableCellPosition => TableCellValue): TableCellValue = {
                     referenceResolver(TableCellPosition(0, 0))
                 }
+                override def dependsOn: Iterable[TableCellPosition] = Array(TableCellPosition(0, 0))
             })
         ))
 
