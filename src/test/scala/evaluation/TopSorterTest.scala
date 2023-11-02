@@ -15,5 +15,10 @@ class TopSorterTest extends FunSuite {
         assert(it.take(5).toSet == Set(2, 3, 5, 7, 11)) // only divisor is 1
         assert(it.take(4).toSet == Set(4, 6, 9, 10)) // only divisors are 1 and primes
         assert(it.take(2).toSet == Set(8, 12))
+
+        val h = g.withEdge(3, 1)
+        assertThrows[Exception] {
+            TopSorter.topSort(h)
+        }
     }
 }

@@ -18,6 +18,9 @@ object TopSorter {
                 }
             }
         }
+        if (g.hasEdges) {
+            throw new Exception() // TODO: more specific exception (graph has cycles)
+        }
         return list
     }
 }
