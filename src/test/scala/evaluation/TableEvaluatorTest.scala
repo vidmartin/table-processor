@@ -97,7 +97,7 @@ class TableEvaluatorTest extends FunSuite {
                         case (IntegerTableCellValue(ai), IntegerTableCellValue(bi)) => IntegerTableCellValue(ai + bi)
                     }
                 }
-                override def dependsOn = Array(TableCellPosition.parse("E2").get, TableCellPosition.parse("D4").get)
+                override def dependsOn = Array(TableCellPosition.parse("E4").get, TableCellPosition.parse("D4").get)
             },
         )
 

@@ -28,7 +28,7 @@ object TableEvaluator extends BaseTableEvaluator {
         }
 
         if (refset.contains(pos)) {
-            throw new Exception() // TODO: more specific exception (circular dependency between cells)
+            throw new CircularReferenceException(f"cell at position ${pos} references itself! (possibly indirectly)")
         }
 
         cache.put(
