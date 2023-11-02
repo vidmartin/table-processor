@@ -19,7 +19,7 @@ object TopSorter {
             }
         }
         if (g.hasEdges) {
-            throw new Exception() // TODO: more specific exception (graph has cycles)
+            throw new UnexpectedCycleException("cannot run TopSort on an acyclic graph", g)
         }
         return list
     }

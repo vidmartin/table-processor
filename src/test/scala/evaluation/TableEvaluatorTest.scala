@@ -6,7 +6,7 @@ import org.scalatest.FunSuite
 import table._
 
 class TableEvaluatorTest extends FunSuite {
-    val evaluators = Array(TableEvaluator)
+    val evaluators = Array(TableEvaluator, TopSortTableEvaluator)
 
     test("test1") {
         val positions = Array("B2", "D4", "E4", "E5", "F6", "Z8")
@@ -108,7 +108,7 @@ class TableEvaluatorTest extends FunSuite {
         ))
 
         for (evaluator <- evaluators) {
-            assertThrows[Exception /* TODO: more specific */] {
+            assertThrows[CircularReferenceException] {
                 evaluator.evaluateTable(table)
             }
         }
@@ -125,7 +125,7 @@ class TableEvaluatorTest extends FunSuite {
         ))
 
         for (evaluator <- evaluators) {
-            assertThrows[Exception /* TODO: more specific */] {
+            assertThrows[CircularReferenceException] {
                 evaluation.TableEvaluator.evaluateTable(table)
             }
         }

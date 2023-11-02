@@ -6,7 +6,7 @@ import scala.util.matching.Regex
 final case class TableCellPosition(row: Int, column: Int)
 
 object TableCellPosition {
-    val LETTER_COUNT = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".length()
+    val LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     val FIRST_LETTER_INDEX = 'A'.toInt
 
     def parse(s: String): Option[TableCellPosition] = {
@@ -24,7 +24,7 @@ object TableCellPosition {
         // assertion: all chars in col are uppercase letters
         var index: Int = 0
         for (c <- col) {
-            index = LETTER_COUNT * index + (c.toInt - FIRST_LETTER_INDEX)
+            index = LETTERS.length() * index + (c.toInt - FIRST_LETTER_INDEX)
         }
         index
     }
