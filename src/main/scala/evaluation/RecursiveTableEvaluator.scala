@@ -6,7 +6,7 @@ import scala.collection.immutable.HashMap
 import scala.collection.immutable.HashSet
 import table._
 
-object TableEvaluator extends BaseTableEvaluator {
+object RecursiveTableEvaluator extends BaseTableEvaluator {
     override def evaluateTable(table: Table[TableCell]): Table[ValueTableCell] = {
         val cache = new HashMapMut[TableCellPosition, ValueTableCell]
 
