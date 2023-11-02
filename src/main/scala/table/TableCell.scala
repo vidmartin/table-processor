@@ -19,13 +19,13 @@ final case class FormulaTableCell(formula: String) extends TableCell {
 object TableCell {
     def parse(s: String): Option[TableCell] = {
         if (s.forall(c => c.isWhitespace)) {
-            Some(ValueTableCell(EmptyTableCellValue))
+            None
         } else if (s.iterator.forall(c => c.isDigit)) {
             Some(ValueTableCell(IntegerTableCellValue(s.toInt)))
         } else if (s.startsWith("=")) {
             Some(FormulaTableCell(s.substring(1)))
         } else {
-            None
+            throw new Exception() // TODO: more specific exception
         }
     }
 }

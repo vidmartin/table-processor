@@ -34,7 +34,7 @@ object TableEvaluator extends BaseTableEvaluator {
         cache.put(
             pos,
             ValueTableCell(
-                table.get(pos).evaluate(
+                table.get(pos).get.evaluate(
                     pos2 => {
                         evaluateCell(table, cache, pos2, refset + pos2)
                         cache.get(pos2).get.value

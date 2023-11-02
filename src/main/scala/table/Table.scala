@@ -4,29 +4,22 @@ package table
 import scala.collection.immutable.HashMap
 import tableReader.TableReader
 
-class Table[T <: TableCell](content: HashMap[TableCellPosition, TableCell]) {
-    def get(pos: TableCellPosition): TableCell = {
-        content.getOrElse(pos, new ValueTableCell(EmptyTableCellValue))
+class Table[T <: TableCell](content: HashMap[TableCellPosition, T]) {
+    def get(pos: TableCellPosition): Option[T] = {
+        content.get(pos)
     }
 
-    def nonEmptyPositions: Iterable[TableCellPosition] = {
-        content.flatMap({
-            case (pos, ValueTableCell(EmptyTableCellValue)) => None
-            case (pos, _) => Some(pos)
-        })
-    }
+    def withSet(pos: TableCellPosition, cell: T) = new Table(content.updated(pos, cell))
+    def nonEmptyPositions: Iterable[TableCellPosition] = content.keys
 }
 
 object Table {
     def parse(tableReader: TableReader): Table[TableCell] = {
         val map = HashMap.from(
             tableReader.zipWithIndex.flatMap({
-                case (row, i) => row.iterator.zipWithIndex.map({
-                    case (cell, j) => (
-                        TableCellPosition(i, j),
-                        TableCell.parse(cell).getOrElse(
-                            throw new Exception() /* TODO: more specific exception */
-                        )
+                case (row, i) => row.iterator.zipWithIndex.flatMap({
+                    case (cell, j) => TableCell.parse(cell).map(
+                        parsed => (TableCellPosition(i, j), parsed)
                     )
                 })
             })
@@ -34,4 +27,6 @@ object Table {
 
         new Table(map)
     }
+
+    def empty[T <: TableCell] = new Table[T](HashMap.empty)
 }

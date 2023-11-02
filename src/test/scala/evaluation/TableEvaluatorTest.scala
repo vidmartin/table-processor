@@ -43,7 +43,6 @@ class TableEvaluatorTest extends FunSuite {
                 }
                 override def dependsOn = Array(TableCellPosition.parse("B2").get, TableCellPosition.parse("D4").get)
             },
-            ValueTableCell(EmptyTableCellValue),
         )
 
         val table = new Table[TableCell](HashMap.from(
@@ -55,13 +54,13 @@ class TableEvaluatorTest extends FunSuite {
         for (evaluator <- evaluators) {
             val result = evaluator.evaluateTable(table)
 
-            assert(result.get(TableCellPosition.parse("A1").get) == ValueTableCell(EmptyTableCellValue))
-            assert(result.get(TableCellPosition.parse("B2").get) == ValueTableCell(IntegerTableCellValue(7)))
-            assert(result.get(TableCellPosition.parse("D4").get) == ValueTableCell(IntegerTableCellValue(6)))
-            assert(result.get(TableCellPosition.parse("E4").get) == ValueTableCell(IntegerTableCellValue(29)))
-            assert(result.get(TableCellPosition.parse("E5").get) == ValueTableCell(IntegerTableCellValue(42)))
-            assert(result.get(TableCellPosition.parse("F6").get) == ValueTableCell(IntegerTableCellValue(13)))
-            assert(result.get(TableCellPosition.parse("Z8").get) == ValueTableCell(EmptyTableCellValue))
+            assert(result.get(TableCellPosition.parse("A1").get).isEmpty)
+            assert(result.get(TableCellPosition.parse("B2").get).get == ValueTableCell(IntegerTableCellValue(7)))
+            assert(result.get(TableCellPosition.parse("D4").get).get == ValueTableCell(IntegerTableCellValue(6)))
+            assert(result.get(TableCellPosition.parse("E4").get).get == ValueTableCell(IntegerTableCellValue(29)))
+            assert(result.get(TableCellPosition.parse("E5").get).get == ValueTableCell(IntegerTableCellValue(42)))
+            assert(result.get(TableCellPosition.parse("F6").get).get == ValueTableCell(IntegerTableCellValue(13)))
+            assert(result.get(TableCellPosition.parse("Z8").get).isEmpty)
         }
     }
 
@@ -100,7 +99,6 @@ class TableEvaluatorTest extends FunSuite {
                 }
                 override def dependsOn = Array(TableCellPosition.parse("E2").get, TableCellPosition.parse("D4").get)
             },
-            ValueTableCell(EmptyTableCellValue),
         )
 
         val table = new Table[TableCell](HashMap.from(
