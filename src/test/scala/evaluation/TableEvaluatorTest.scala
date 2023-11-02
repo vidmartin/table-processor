@@ -6,6 +6,8 @@ import org.scalatest.FunSuite
 import table._
 
 class TableEvaluatorTest extends FunSuite {
+    val evaluators = Array(TableEvaluator)
+
     test("test1") {
         val positions = Array("B2", "D4", "E4", "E5", "F6", "Z8")
         val cells = Array(
@@ -47,15 +49,17 @@ class TableEvaluatorTest extends FunSuite {
             ).zip(cells)
         ))
 
-        val result = evaluation.TableEvaluator.evaluateTable(table)
+        for (evaluator <- evaluators) {
+            val result = evaluator.evaluateTable(table)
 
-        assert(result.get(TableCellPosition.parse("A1").get) == ValueTableCell(EmptyTableCellValue))
-        assert(result.get(TableCellPosition.parse("B2").get) == ValueTableCell(IntegerTableCellValue(7)))
-        assert(result.get(TableCellPosition.parse("D4").get) == ValueTableCell(IntegerTableCellValue(6)))
-        assert(result.get(TableCellPosition.parse("E4").get) == ValueTableCell(IntegerTableCellValue(29)))
-        assert(result.get(TableCellPosition.parse("E5").get) == ValueTableCell(IntegerTableCellValue(42)))
-        assert(result.get(TableCellPosition.parse("F6").get) == ValueTableCell(IntegerTableCellValue(13)))
-        assert(result.get(TableCellPosition.parse("Z8").get) == ValueTableCell(EmptyTableCellValue))
+            assert(result.get(TableCellPosition.parse("A1").get) == ValueTableCell(EmptyTableCellValue))
+            assert(result.get(TableCellPosition.parse("B2").get) == ValueTableCell(IntegerTableCellValue(7)))
+            assert(result.get(TableCellPosition.parse("D4").get) == ValueTableCell(IntegerTableCellValue(6)))
+            assert(result.get(TableCellPosition.parse("E4").get) == ValueTableCell(IntegerTableCellValue(29)))
+            assert(result.get(TableCellPosition.parse("E5").get) == ValueTableCell(IntegerTableCellValue(42)))
+            assert(result.get(TableCellPosition.parse("F6").get) == ValueTableCell(IntegerTableCellValue(13)))
+            assert(result.get(TableCellPosition.parse("Z8").get) == ValueTableCell(EmptyTableCellValue))
+        }
     }
 
     test("test2") {
@@ -99,8 +103,10 @@ class TableEvaluatorTest extends FunSuite {
             ).zip(cells)
         ))
 
-        assertThrows[Exception /* TODO: more specific */] {
-            evaluation.TableEvaluator.evaluateTable(table)
+        for (evaluator <- evaluators) {
+            assertThrows[Exception /* TODO: more specific */] {
+                evaluator.evaluateTable(table)
+            }
         }
     }
 
@@ -113,8 +119,10 @@ class TableEvaluatorTest extends FunSuite {
             })
         ))
 
-        assertThrows[Exception /* TODO: more specific */] {
-            evaluation.TableEvaluator.evaluateTable(table)
+        for (evaluator <- evaluators) {
+            assertThrows[Exception /* TODO: more specific */] {
+                evaluation.TableEvaluator.evaluateTable(table)
+            }
         }
     }
 }
