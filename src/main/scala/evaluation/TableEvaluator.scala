@@ -10,7 +10,7 @@ object TableEvaluator extends BaseTableEvaluator {
     override def evaluateTable(table: Table[TableCell]): Table[ValueTableCell] = {
         val cache = new HashMapMut[TableCellPosition, ValueTableCell]
 
-        for (pos <- table.nonEmpty()) {
+        for (pos <- table.nonEmptyPositions()) {
             evaluateCell(table, cache, pos, HashSet())
         }
         

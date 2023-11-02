@@ -9,8 +9,8 @@ class Table[T <: TableCell](content: HashMap[TableCellPosition, TableCell]) {
         content.getOrElse(pos, new ValueTableCell(EmptyTableCellValue))
     }
 
-    def nonEmpty(): Iterator[TableCellPosition] = {
-        content.iterator.flatMap({
+    def nonEmptyPositions: Iterable[TableCellPosition] = {
+        content.flatMap({
             case (pos, ValueTableCell(EmptyTableCellValue)) => None
             case (pos, _) => Some(pos)
         })
