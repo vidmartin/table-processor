@@ -3,7 +3,7 @@ package table
 
 import scala.util.matching.Regex
 
-case class TableCellPosition(row: Int, column: Int)
+final case class TableCellPosition(row: Int, column: Int)
 
 object TableCellPosition {
     val LETTER_COUNT = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".length()

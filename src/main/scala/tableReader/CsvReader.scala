@@ -4,7 +4,7 @@ package tableReader
 import scala.io.Source
 import scala.util.matching.Regex
 
-case class CsvConfig(
+final case class CsvConfig(
     cellSeparator: String,
 )
 

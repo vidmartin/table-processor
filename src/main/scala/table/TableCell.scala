@@ -3,14 +3,17 @@ package table
 
 abstract class TableCell {
     def evaluate(referenceResolver: TableCellPosition => TableCellValue): TableCellValue
+    def dependsOn: Iterable[TableCellPosition]
 }
 
-case class ValueTableCell(value: TableCellValue) extends TableCell {
+final case class ValueTableCell(value: TableCellValue) extends TableCell {
     override def evaluate(referenceResolver: TableCellPosition => TableCellValue): TableCellValue = value
+    override def dependsOn: Iterable[TableCellPosition] = Iterable.empty
 }
 
-case class FormulaTableCell(formula: String) extends TableCell {
+final case class FormulaTableCell(formula: String) extends TableCell {
     override def evaluate(referenceResolver: TableCellPosition => TableCellValue): TableCellValue = ???
+    override def dependsOn: Iterable[TableCellPosition] = ???
 }
 
 object TableCell {
