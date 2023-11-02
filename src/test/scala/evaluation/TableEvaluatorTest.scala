@@ -1,9 +1,9 @@
 
-
-package table
+package evaluation
 
 import scala.collection.immutable.HashMap
 import org.scalatest.FunSuite
+import table._
 
 class TableEvaluatorTest extends FunSuite {
     test("test1") {
@@ -47,7 +47,7 @@ class TableEvaluatorTest extends FunSuite {
             ).zip(cells)
         ))
 
-        val result = TableEvaluator.evaluateTable(table)
+        val result = evaluation.TableEvaluator.evaluateTable(table)
 
         assert(result.get(TableCellPosition.parse("A1").get) == ValueTableCell(EmptyTableCellValue))
         assert(result.get(TableCellPosition.parse("B2").get) == ValueTableCell(IntegerTableCellValue(7)))
@@ -100,7 +100,7 @@ class TableEvaluatorTest extends FunSuite {
         ))
 
         assertThrows[Exception /* TODO: more specific */] {
-            TableEvaluator.evaluateTable(table)
+            evaluation.TableEvaluator.evaluateTable(table)
         }
     }
 
@@ -114,7 +114,7 @@ class TableEvaluatorTest extends FunSuite {
         ))
 
         assertThrows[Exception /* TODO: more specific */] {
-            TableEvaluator.evaluateTable(table)
+            evaluation.TableEvaluator.evaluateTable(table)
         }
     }
 }

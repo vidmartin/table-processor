@@ -1,13 +1,10 @@
 
-package table
+package evaluation
 
 import scala.collection.mutable.{HashMap => HashMapMut}
 import scala.collection.immutable.HashMap
 import scala.collection.immutable.HashSet
-
-abstract class BaseTableEvaluator {
-    def evaluateTable(table: Table[TableCell]): Table[ValueTableCell]
-}
+import table._
 
 object TableEvaluator extends BaseTableEvaluator {
     override def evaluateTable(table: Table[TableCell]): Table[ValueTableCell] = {
