@@ -6,7 +6,8 @@ class NeighborsDirectedGraph[T] private(
     childrenMap: Map[T, collection.Set[T]],
     parentsMap: Map[T, collection.Set[T]],
 ) extends DirectedGraph[T] {
-    // invariant: childrenMap & parentsMap dont contain empty sets as values!!!
+    // invariant: childrenMap & parentsMap dont contain empty sets as values !!!
+    // invariant: v in childrenMap[u] <=> u in parentsMap[v] !!!
 
     private def assertNodeKnown(node: T) {
         if (!nodes.contains(node)) {
@@ -32,7 +33,7 @@ class NeighborsDirectedGraph[T] private(
     override def isEdge(from: T, to: T): Boolean = {
         assertNodeKnown(from)
         assertNodeKnown(to)
-        return childrenMap.get(from).get.contains(to)
+        return childrenMap.get(from).map(_.contains(to)).getOrElse(false)
     }
     override def withEdge(from: T, to: T): NeighborsDirectedGraph[T] = {
         assertNodeKnown(from)
@@ -48,11 +49,11 @@ class NeighborsDirectedGraph[T] private(
         assertNodeKnown(to)
         return new NeighborsDirectedGraph[T](
             nodes,
-            childrenMap.updatedWith(from) { set => Some(set.get - to).filter(_.nonEmpty) },
-            parentsMap.updatedWith(to) { set => Some(set.get - from).filter(_.nonEmpty) },
+            childrenMap.updatedWith(from) { set => set.map(_ - to).filter(_.nonEmpty) },
+            parentsMap.updatedWith(to) { set => set.map(_ - from).filter(_.nonEmpty) },
         )
     }
-    
+    def hasEdges: Boolean = childrenMap.nonEmpty
     def transposed: NeighborsDirectedGraph[T] = new NeighborsDirectedGraph[T](
         nodes, parentsMap, childrenMap
     )
@@ -65,8 +66,8 @@ object NeighborsDirectedGraph {
 
     def buildFromParents[T](nodes: Iterable[T], parents: T => Iterable[T]): NeighborsDirectedGraph[T] = {
         var graph = edgeless(nodes)
-        for (from <- nodes) {
-            for (to <- parents(from)) {
+        for (to <- nodes) {
+            for (from <- parents(to)) {
                 graph = graph.withEdge(from, to)
             }
         }
