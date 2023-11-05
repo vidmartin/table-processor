@@ -3,46 +3,58 @@ E0 -> switch E1 { SwitchBody }
 E0 -> if E1 { E0 } MaybeElse
 E0 -> E1
 
-E1 -> E1 and E2
-E1 -> E1 or E2
-E1 -> not E2
-E1 -> E2
+E1 -> E2 E1'
+E1 -> not E2 E1'
 
-E2 -> E3 = E3
-E2 -> E3 != E3
-E2 -> E3 < E3
-E2 -> E3 <= E3
-E2 -> E3 > E3
-E2 -> E3 >= E3
-E2 -> E3
+E1' -> and E1
+E1' -> or E1
+E1' ->
 
-E3 -> E3 + E4
-E3 -> E3 - E4
-E3 -> E4
+E2 -> E3 E2'
 
-E4 -> E4 * E5
-E4 -> E4 / E5
-E4 -> E4 % E5
-E4 -> E5
+E2' -> = E3
+E2' -> != E3
+E2' -> < E3
+E2' -> <= E3
+E2' -> > E3
+E2' -> >= E3
+E2' -> 
+
+E3 -> E4 E3'
+
+E3' -> + E3
+E3' -> - E3
+E3' ->
+
+E4 -> E5 E4'
+
+E4' -> * E4
+E4' -> / E4
+E4' -> % E4
+E4' -> 
 
 E5 -> ( E0 )
-E5 -> Ident
-E5 -> FunCall
-E5 -> Range
+E5 -> ident E5'
 
-FunCall -> ident ( Params )
-Range -> ident : ident
+# FunCall:
+E5' -> ( Params )
+# Range:
+E5' -> : ident
+# Just a name:
+E5' ->
 
-Params -> E0 MoreParams
-MoreParams -> , Params
-MoreParams ->
+Params -> E0 Params'
 
-SwitchBody -> SwitchCase SwitchBodyRest
-SwitchBodyRest -> , SwitchBody
-SwitchBodyRest ->
+Params' -> , Params
+Params' ->
 
-SwitchCase -> E0 => E0
-SwitchCase -> E0
+SwitchBody -> SwitchCase SwitchBody'
+SwitchBody' -> , SwitchBody
+SwitchBody' ->
+
+SwitchCase -> E0 SwitchCase'
+SwitchCase' -> => E0
+SwitchCase' ->
 
 MaybeElse -> else { E0 }
 MaybeElse ->
