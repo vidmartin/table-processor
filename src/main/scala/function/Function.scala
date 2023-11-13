@@ -13,7 +13,7 @@ abstract class Function {
         if (params.length != paramCount) {
             throw new Exception() // TODO: more specific exception
         }
-        return evaluate(params)
+        return evaluateInner(params)
     }
     protected def evaluateInner(params: Array[FunctionParam]): FunctionParam
 }
