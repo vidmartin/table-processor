@@ -5,6 +5,14 @@ abstract class TableCellValue {
     def getInt: Option[Int]
     def getFloat: Option[Float]
     def getString: Option[String]
+
+    def getBool: Boolean = {
+        getInt.map(_ != 0).orElse(
+            getFloat.map(_ != 0)
+        ).orElse(
+            getString.map(!_.forall(c => c.isWhitespace))
+        ).getOrElse(false)
+    }
 }
 
 final case class IntegerTableCellValue(value: Int) extends TableCellValue {

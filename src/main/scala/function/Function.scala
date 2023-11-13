@@ -30,6 +30,18 @@ abstract class BinaryFunction extends Function {
     def evaluate(lhsWrap: TableCellValue, rhsWrap: TableCellValue): TableCellValue
 }
 
+abstract class BooleanBinaryFunction extends BinaryFunction {
+    override def evaluate(lhsWrap: TableCellValue, rhsWrap: TableCellValue): TableCellValue = {
+        if (evaluateBoolean(lhsWrap, rhsWrap)) {
+            IntegerTableCellValue(1)
+        } else {
+            IntegerTableCellValue(0)
+        }
+    }
+
+    def evaluateBoolean(lhsWrap: TableCellValue, rhsWrap: TableCellValue): Boolean
+}
+
 abstract class AggregateFunction extends Function {
     override def paramCount: Int = 1
     override def evaluateInner(params: Array[FunctionParam]): FunctionParam = {
@@ -75,6 +87,60 @@ abstract class ColumnAggregateFunction extends Function {
 }
 
 object Function {
+    object AND extends BooleanBinaryFunction {
+        override def evaluateBoolean(lhsWrap: TableCellValue, rhsWrap: TableCellValue): Boolean = lhsWrap.getBool && rhsWrap.getBool
+    }
+
+    object OR extends BooleanBinaryFunction {
+        override def evaluateBoolean(lhsWrap: TableCellValue, rhsWrap: TableCellValue): Boolean = lhsWrap.getBool || rhsWrap.getBool
+    }
+
+    object EQ extends BooleanBinaryFunction {
+        override def evaluateBoolean(lhsWrap: TableCellValue, rhsWrap: TableCellValue): Boolean = {
+            (lhsWrap, rhsWrap) match {
+                case (FloatTableCellValue(vf), IntegerTableCellValue(vi)) => vf == vi.toFloat
+                case (IntegerTableCellValue(vi), FloatTableCellValue(vf)) => vf == vi.toFloat
+                case (a, b) => a == b
+            }
+        }
+    }
+
+    object NE extends BooleanBinaryFunction {
+        override def evaluateBoolean(lhsWrap: TableCellValue, rhsWrap: TableCellValue): Boolean = {
+            !EQ.evaluateBoolean(lhsWrap, rhsWrap)
+        }
+    }
+
+    object GT extends BooleanBinaryFunction {
+        override def evaluateBoolean(lhsWrap: TableCellValue, rhsWrap: TableCellValue): Boolean = {
+            (lhsWrap, rhsWrap) match {
+                case (IntegerTableCellValue(a), IntegerTableCellValue(b)) => a > b
+                case _ => (lhsWrap.getFloat, rhsWrap.getFloat) match {
+                    case (Some(a), Some(b)) => a > b
+                    case _ => throw new Exception() // TODO: more specific
+                }
+            }
+        }
+    }
+
+    object LT extends BooleanBinaryFunction {
+        override def evaluateBoolean(lhsWrap: TableCellValue, rhsWrap: TableCellValue): Boolean = {
+            GT.evaluateBoolean(rhsWrap, lhsWrap)
+        }
+    }
+
+    object GE extends BooleanBinaryFunction {
+        override def evaluateBoolean(lhsWrap: TableCellValue, rhsWrap: TableCellValue): Boolean = {
+            !LT.evaluateBoolean(lhsWrap, rhsWrap)
+        }
+    }
+
+    object LE extends BooleanBinaryFunction {
+        override def evaluateBoolean(lhsWrap: TableCellValue, rhsWrap: TableCellValue): Boolean = {
+            !GT.evaluateBoolean(lhsWrap, rhsWrap)
+        }
+    }
+
     object ADD extends BinaryFunction {
         override def evaluate(lhsWrap: TableCellValue, rhsWrap: TableCellValue): TableCellValue = {
             (lhsWrap, rhsWrap) match {
