@@ -20,12 +20,14 @@ object TableCell {
     def parse(s: String): Option[TableCell] = {
         if (s.forall(c => c.isWhitespace)) {
             None
-        } else if (s.iterator.forall(c => c.isDigit)) {
-            Some(ValueTableCell(IntegerTableCellValue(s.toInt)))
         } else if (s.startsWith("=")) {
             Some(FormulaTableCell(s.substring(1)))
         } else {
-            throw new Exception() // TODO: more specific exception
+            (s.toIntOption, s.toFloatOption) match {
+                case (None, Some(v)) => Some(ValueTableCell(FloatTableCellValue(v)))
+                case (Some(v), Some(_)) => Some(ValueTableCell(IntegerTableCellValue(v)))
+                case _ => Some(ValueTableCell(StringTableCellValue(s)))
+            }
         }
     }
 }
