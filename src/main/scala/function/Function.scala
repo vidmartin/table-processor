@@ -6,54 +6,65 @@ import table.IntegerTableCellValue
 import table.FloatTableCellValue
 import table.StringTableCellValue
 import scala.collection.StepperShape
+import expression.{Expression, ExpressionEvaluationContext}
+import expression.RangeExpression
+import expression.ConstantExpression
+import expression.FinalExpression
 
 abstract class Function {
+    def evaluate(context: ExpressionEvaluationContext, params: Array[Expression]): FinalExpression
+}
+
+abstract class FixedParamsFunction {
     def paramCount: Int
-    def evaluate(params: Array[FunctionParam]): FunctionParam = {
+    def evaluate(context: ExpressionEvaluationContext, params: Array[Expression]): FinalExpression = {
         if (params.length != paramCount) {
             throw new Exception() // TODO: more specific exception
         }
-        return evaluate(params)
+        return evaluateInner(context, params)
     }
-    protected def evaluateInner(params: Array[FunctionParam]): FunctionParam
+    protected def evaluateInner(context: ExpressionEvaluationContext, params: Array[Expression]): FinalExpression
 }
 
-abstract class BinaryFunction extends Function {
+abstract class BinaryFunction extends FixedParamsFunction {
     override def paramCount: Int = 2
-    override def evaluateInner(params: Array[FunctionParam]): FunctionParam = {
-        (params(0), params(1)) match {
-            case (FunctionParamValue(lhs), FunctionParamValue(rhs)) => FunctionParamValue(evaluate(lhs, rhs))
-            case _ => throw new Exception() // TODO: more specific exception
-        }
+    override def evaluateInner(context: ExpressionEvaluationContext, params: Array[Expression]): FinalExpression = {
+        val (lhs, rhs) = (params(0), params(1))
+        return evaluate(context, lhs, rhs)
     }
 
-    def evaluate(lhsWrap: TableCellValue, rhsWrap: TableCellValue): TableCellValue
+    def evaluate(context: ExpressionEvaluationContext, lhs: Expression, rhs: Expression): FinalExpression
 }
 
-abstract class AggregateFunction extends Function {
+abstract class AggregateFunction extends FixedParamsFunction {
     override def paramCount: Int = 1
-    override def evaluateInner(params: Array[FunctionParam]): FunctionParam = {
+    override def evaluateInner(context: ExpressionEvaluationContext, params: Array[Expression]): FinalExpression = {
         (params(0)) match {
-            case (FunctionParamRange(width, array)) => FunctionParamValue(evaluate(width, array))
-            case _ => throw new Exception() // TODO: more specific exception
-        }
-    }
-
-    def evaluate(width: Int, array: Array[TableCellValue]): TableCellValue
-}
-
-abstract class RowAggregateFunction extends Function {
-    override def paramCount: Int = 1
-    override def evaluateInner(params: Array[FunctionParam]): FunctionParam = {
-        (params(0)) match {
-            case (FunctionParamRange(width, array)) => FunctionParamRange(
-                1, array.grouped(width).map(row => evaluateRow(row)).toArray
+            case (RangeExpression(range)) => evaluate(
+                context,
+                range.width,
+                range.iterRowsColumns.map(pos => context.get(pos)).toArray
             )
             case _ => throw new Exception() // TODO: more specific exception
         }
     }
 
-    def evaluateRow(array: Array[TableCellValue]): TableCellValue
+    def evaluate(context: ExpressionEvaluationContext, width: Int, array: Array[Expression]): FinalExpression
+}
+
+abstract class RowAggregateFunction extends FixedParamsFunction {
+    override def paramCount: Int = 1
+    override def evaluateInner(context: ExpressionEvaluationContext, params: Array[Expression]): FinalExpression = {
+        (params(0)) match {
+            case (RangeExpression(range)) => RangeExpression(range)
+            // case (FunctionParamRange(width, array)) => FunctionParamRange(
+            //     1, array.grouped(width).map(row => evaluateRow(row)).toArray
+            // )
+            case _ => throw new Exception() // TODO: more specific exception
+        }
+    }
+
+    def evaluateRow(array: Array[TableCellValue]): FinalExpression
 }
 
 abstract class ColumnAggregateFunction extends Function {
