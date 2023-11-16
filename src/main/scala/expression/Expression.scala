@@ -26,7 +26,3 @@ abstract class Expression {
     def isConstant: Boolean = referencedPositions.take(1).size == 0
     def isAtomic: Boolean = false
 }
-
-trait IterableExpression[T <: Expression] extends Expression {
-    def elements(context: ExpressionEvaluationContext): Iterable[T]
-}
