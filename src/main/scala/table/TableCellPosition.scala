@@ -3,7 +3,11 @@ package table
 
 import scala.util.matching.Regex
 
-final case class TableCellPosition(row: Int, column: Int)
+final case class TableCellPosition(row: Int, column: Int) {
+    override def toString(): String = {
+        f"${TableCellPosition.getColName(column)}${row + 1}"
+    }
+}
 
 object TableCellPosition {
     val LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -27,5 +31,15 @@ object TableCellPosition {
             index = LETTERS.length() * index + (c.toInt - FIRST_LETTER_INDEX)
         }
         index
+    }
+
+    private def getColName(col: Int): String = {
+        var ret = ""
+        var temp = col + 1
+        while (temp > 0) {
+            ret = ret + LETTERS(col % LETTERS.length())
+            temp /= LETTERS.length()
+        }
+        return ret
     }
 }

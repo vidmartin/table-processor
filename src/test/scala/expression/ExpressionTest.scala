@@ -9,34 +9,44 @@ class ExpressionTest extends FunSuite {
     }
 
     test("test1") {
+        val expr = MultiplyExpression(
+            AddExpression(
+                IntExpression(5),
+                IntExpression(6)
+            ),
+            SubtractExpression(
+                IntExpression(4),
+                IntExpression(2)
+            )
+        )
         assert(
-            MultiplyExpression(
-                AddExpression(
-                    IntExpression(5),
-                    IntExpression(6)
-                ),
-                SubtractExpression(
-                    IntExpression(4),
-                    IntExpression(2)
-                )
-            ).evaluate(MockExpressionEvaluationContext)
+            expr.evaluate(MockExpressionEvaluationContext)
             == IntExpression(22)
+        )
+        assert(
+            Set.from(expr.referencedPositions.map(pos => pos.toString()))
+            == Set()
         )
     }
 
     test("test2") {
+        val expr = MultiplyExpression(
+            AddExpression(
+                ReferenceExpression(TableCellPosition.parse("A5").get),
+                ReferenceExpression(TableCellPosition.parse("B6").get)
+            ),
+            SubtractExpression(
+                ReferenceExpression(TableCellPosition.parse("F4").get),
+                ReferenceExpression(TableCellPosition.parse("H2").get)
+            )
+        )
         assert(
-            MultiplyExpression(
-                AddExpression(
-                    ReferenceExpression(TableCellPosition.parse("A5").get),
-                    ReferenceExpression(TableCellPosition.parse("B6").get)
-                ),
-                SubtractExpression(
-                    ReferenceExpression(TableCellPosition.parse("F4").get),
-                    ReferenceExpression(TableCellPosition.parse("H2").get)
-                )
-            ).evaluate(MockExpressionEvaluationContext)
+            expr.evaluate(MockExpressionEvaluationContext)
             == IntExpression(22)
+        )
+        assert(
+            Set.from(expr.referencedPositions.map(pos => pos.toString()))
+            == Set("A5", "B6", "F4", "H2")
         )
     }
 
