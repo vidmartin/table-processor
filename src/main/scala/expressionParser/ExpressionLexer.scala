@@ -9,13 +9,17 @@ class ExpressionLexer(val source: String) extends Iterable[Token] {
         var index: Int = 0
         def hasNext: Boolean = index < source.length()
         def next(): Token = {
+            while (source(index).isWhitespace) {
+                index += 1
+            }
+
             if (source(index).isDigit) {
                 val preDot = source.substring(index).takeWhile(_.isDigit)
                 index += preDot.length()
 
                 var dot = false
                 var postDot = ""
-                if (source(index) == '.') {
+                if (index < source.length() && source(index) == '.') {
                     index += 1
                     dot = true
                     postDot = source.substring(index).takeWhile(_.isDigit)
@@ -23,12 +27,11 @@ class ExpressionLexer(val source: String) extends Iterable[Token] {
                 }
 
                 if (dot) {
-                    FloatToken((preDot + "." + postDot).toFloat)
+                    return FloatToken((preDot + "." + postDot).toFloat)
                 } else {
-                    IntToken(preDot.toInt)
+                    return IntToken(preDot.toInt)
                 }
             } else if (source(index) == '"') {
-                val start = index
                 index += 1
                 
                 var escape = false
@@ -46,10 +49,17 @@ class ExpressionLexer(val source: String) extends Iterable[Token] {
                 }
                 
                 index += 1
-                StringToken(string)
+                return StringToken(string)
             } else if (KEYWORDS.contains(source(index))) {
+                val token = KeywordToken(source(index).toString)
                 index += 1
-                KeywordToken(source(index).toString)
+                return token
+            } else if (source(index).isLetter) {
+                val start = index
+                while (index < source.length() && source(index).isLetterOrDigit) {
+                    index += 1
+                }
+                return IdentifierToken(source.substring(start, index))
             }
             throw new Exception() // TODO: more specific exception
         }
