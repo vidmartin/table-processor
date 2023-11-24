@@ -2,7 +2,7 @@
 import scala.collection.mutable.HashMap
 
 private class ArgLoader(registry: OptRegistry) {
-    def load(args: Array[String]): Unit = {
+    def load(args: Array[String], swallowMissingArgs: Option[() => Boolean] = None): Boolean = {
         val it = args.iterator
 
         while (it.hasNext) {
@@ -11,10 +11,16 @@ private class ArgLoader(registry: OptRegistry) {
 
         val missingOpts = getMissingOpts()
         if (missingOpts.nonEmpty) {
+            if (swallowMissingArgs.map(_()).getOrElse(false)) {
+                return false
+            }
+
             throw new MissingArgException(
                 f"the following required args were not specified: ${missingOpts.mkString(", ")}"
             )
         }
+
+        return true
     }
 
     private def loadNext(it: Iterator[String]): Unit = {
@@ -54,7 +60,7 @@ private class ArgLoader(registry: OptRegistry) {
 }
 
 object ArgLoader {
-    def load(registry: OptRegistry, args: Array[String]): Unit = {
-        new ArgLoader(registry).load(args)
+    def load(registry: OptRegistry, args: Array[String], swallowMissingArgs: Option[() => Boolean] = None): Boolean = {
+        new ArgLoader(registry).load(args, swallowMissingArgs)
     }
 }

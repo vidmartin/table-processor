@@ -1,13 +1,22 @@
 
-class Opts(
-    val inputFile: String, // only mandatory param
-    val separator: String,
-    val format: SupportedFormat,
-    val outputSeparator: String,
-    val headers: Boolean,
-    val outputFile: Option[String],
-    val stdout: Boolean,
-    val help: Boolean,
-    val filters: List[Filter],
-    val range: Option[Range],
-)
+abstract class BaseOpts {
+    def showHelp: Boolean
+}
+
+final object ShowHelpOpts extends BaseOpts {
+    def showHelp: Boolean = true
+}
+
+final case class Opts(
+    inputFile: String, // only mandatory param
+    separator: String,
+    format: SupportedFormat,
+    outputSeparator: String,
+    headers: Boolean,
+    outputFile: Option[String],
+    stdout: Boolean,
+    filters: List[Filter],
+    range: Option[Range],
+) extends BaseOpts {
+    def showHelp: Boolean = false
+}

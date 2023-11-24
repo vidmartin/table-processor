@@ -1,6 +1,6 @@
 
 object Main extends App {
-    def loadOpts(): Opts = {
+    def loadOpts(): BaseOpts = {
         val opts = new OptRegistry
 
         val inputFile = opts.addOption(new RequiredCommandLineOption(
@@ -37,9 +37,12 @@ object Main extends App {
             "when specified, don't do anything, just print help and exit"
         ))
 
-        ArgLoader.load(opts, this.args)
+        
+        if (!ArgLoader.load(opts, this.args, Some(() => help.optRegister.get))) {
+            return ShowHelpOpts
+        }
 
-        return new Opts(
+        return Opts(
             inputFile = inputFile.optRegister.get,
             separator = separator.optRegister.get,
             format = format.optRegister.get,
@@ -47,17 +50,19 @@ object Main extends App {
             headers = headers.optRegister.get,
             outputFile = outputFile.optRegister.getOptional,
             stdout = stdout.optRegister.get,
-            help = help.optRegister.get,
             filters = List(),
             range = None
         )
     }
 
-    val opts = loadOpts()
-
-    if (opts.help) {
-        // TODO: show help and exit
+    def run(opts: Opts): Unit = {
+        println(f"loading file ${opts.inputFile}")
     }
 
-    println(f"loading file ${opts.inputFile}")
+    loadOpts() match {
+        case ShowHelpOpts => {
+            println("showing help")
+        }
+        case o: Opts => run(o)
+    }
 }
