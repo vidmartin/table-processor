@@ -38,7 +38,7 @@ class TableCellTest extends FunSuite {
                 )
             )
         )))
-        assert(TableCell.parse("=1 + (2 + 3) * (4 + (5 + 6)+7))") == Some(
+        assert(TableCell.parse("=1 + (2 + 3) * (4 + (5 + 6)+7))") == Some(TableCell(
             AddExpression(
                 IntExpression(1),
                 MultiplyExpression(
@@ -47,17 +47,17 @@ class TableCellTest extends FunSuite {
                         IntExpression(3)
                     ),
                     AddExpression(
+                        IntExpression(4),
                         AddExpression(
-                            IntExpression(4),
                             AddExpression(
                                 IntExpression(5),
                                 IntExpression(6)
-                            )
+                            ),
+                            IntExpression(7)
                         ),
-                        IntExpression(7)
                     )
                 )
             )
-        ))
+        )))
     }
 }
