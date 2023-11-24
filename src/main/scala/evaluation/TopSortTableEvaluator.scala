@@ -5,12 +5,15 @@ import table._
 import java.util.Collection
 import scala.collection.immutable.HashMap
 import scala.collection.mutable.{HashMap => HashMapMut}
+import expression.Expression
+import expression.ConstantExpression
+import expression.ExpressionEvaluationContext
 
 object TopSortTableEvaluator extends BaseTableEvaluator {
-    override def evaluateTable(srcTable: Table[TableCell]): Table[ValueTableCell] = {
+    override def evaluateTable(srcTable: Table[Expression]): Table[ConstantExpression] = {
         val graph = NeighborsDirectedGraph.buildFromParents[TableCellPosition](
             srcTable.nonEmptyPositions,
-            pos => srcTable.get(pos).get.dependsOn
+            pos => srcTable.get(pos).get.expr.referencedPositions
         )
 
         val sorted = try { TopSorter.topSort(graph) } catch {
@@ -25,14 +28,19 @@ object TopSortTableEvaluator extends BaseTableEvaluator {
             }
         }
 
-        var wipTable = Table.empty[ValueTableCell]
+        var wipTable = Table.empty[ConstantExpression]
+
+        val evaluationContext = new ExpressionEvaluationContext {
+            def get(pos: TableCellPosition): Expression = {
+                wipTable.get(pos).get.expr
+            }
+        }
+
         for (posToEvaluate <- sorted) {
             wipTable = wipTable.withSet(
                 posToEvaluate,
-                new ValueTableCell(
-                    srcTable.get(posToEvaluate).get.evaluate(
-                        referencedPos => wipTable.get(referencedPos).get.value
-                    )
+                new TableCell(
+                    srcTable.get(posToEvaluate).get.expr.evaluate(evaluationContext)
                 )
             )
         }

@@ -1,7 +1,6 @@
 
 package expression
 
-import table.TableCellValue
 import table.TableCellPosition
 
 abstract class ExpressionEvaluationContext {

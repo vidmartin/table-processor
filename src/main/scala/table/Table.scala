@@ -3,18 +3,19 @@ package table
 
 import scala.collection.immutable.HashMap
 import tableReader.TableReader
+import expression.Expression
 
-class Table[T <: TableCell](content: HashMap[TableCellPosition, T]) {
-    def get(pos: TableCellPosition): Option[T] = {
+class Table[T <: Expression](content: HashMap[TableCellPosition, TableCell[T]]) {
+    def get(pos: TableCellPosition): Option[TableCell[T]] = {
         content.get(pos)
     }
 
-    def withSet(pos: TableCellPosition, cell: T) = new Table(content.updated(pos, cell))
+    def withSet(pos: TableCellPosition, cell: TableCell[T]) = new Table(content.updated(pos, cell))
     def nonEmptyPositions: Iterable[TableCellPosition] = content.keys
 }
 
 object Table {
-    def parse(tableReader: TableReader): Table[TableCell] = {
+    def parse(tableReader: TableReader): Table[Expression] = {
         val map = HashMap.from(
             tableReader.zipWithIndex.flatMap({
                 case (row, i) => row.iterator.zipWithIndex.flatMap({
@@ -28,5 +29,5 @@ object Table {
         new Table(map)
     }
 
-    def empty[T <: TableCell] = new Table[T](HashMap.empty)
+    def empty[T <: Expression] = new Table[T](HashMap.empty)
 }

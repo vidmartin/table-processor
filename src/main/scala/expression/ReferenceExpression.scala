@@ -1,6 +1,6 @@
 package expression
 
-import table.{TableCellPosition, TableCellValue}
+import table.TableCellPosition
 
 final case class ReferenceExpression(pos: TableCellPosition) extends Expression {
     def evaluate(context: ExpressionEvaluationContext): ConstantExpression = {
