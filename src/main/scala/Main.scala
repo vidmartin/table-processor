@@ -7,6 +7,13 @@ import table.Table
 import evaluation.TopSortTableEvaluator
 import scala.util.Using
 import java.io.PrintStream
+import tablePrinter.CsvTablePrinter
+import tablePrinter.ConstantExpressionFormatter
+import java.io.File
+import scala.Console
+import java.util.stream
+import tablePrinter.StringWriter
+import tablePrinter.TableViewWithHeaders
 
 object Main extends App {
     def loadOpts(): BaseOpts = {
@@ -73,6 +80,13 @@ object Main extends App {
             }
         }.get
         val resultTable = TopSortTableEvaluator.evaluateTable(inputTable)
+        val resultView = new TableViewWithHeaders(resultTable)
+        // TODO: create table printer dynamically based on opts
+        val printer = new CsvTablePrinter(CsvConfig(opts.separator), ConstantExpressionFormatter)
+        printer.printTable(resultView, new StringWriter {
+            override def write(s: String): Unit = print(s)
+            override def writeln(s: String): Unit = println(s)
+        })
         // TODO: write result table
         // TODO: file closing
     }
