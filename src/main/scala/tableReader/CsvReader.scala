@@ -3,10 +3,7 @@ package tableReader
 
 import scala.io.Source
 import scala.util.matching.Regex
-
-final case class CsvConfig(
-    cellSeparator: String,
-)
+import config.CsvConfig
 
 class CsvReader(input: Source, config: CsvConfig) extends TableReader {
     val lines = input.getLines().filter(l => !l.forall(c => c.isWhitespace))

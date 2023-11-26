@@ -1,11 +1,12 @@
 
 import tableReader.TableReader
 import tableReader.CsvReader
-import tableReader.CsvConfig
+import config.CsvConfig
 import scala.io.Source
 import table.Table
 import evaluation.TopSortTableEvaluator
 import scala.util.Using
+import java.io.PrintStream
 
 object Main extends App {
     def loadOpts(): BaseOpts = {
@@ -72,7 +73,6 @@ object Main extends App {
             }
         }.get
         val resultTable = TopSortTableEvaluator.evaluateTable(inputTable)
-
         // TODO: write result table
         // TODO: file closing
     }

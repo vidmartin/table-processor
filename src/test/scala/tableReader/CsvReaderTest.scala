@@ -4,7 +4,7 @@ package tableReader
 import org.scalatest.FunSuite
 import tableReader.CsvReader
 import scala.io.Source
-import tableReader.CsvConfig
+import config.CsvConfig
 
 class CsvReaderTest extends FunSuite {
     test("test1") {

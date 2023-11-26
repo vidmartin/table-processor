@@ -5,7 +5,7 @@ import scala.collection.immutable.HashMap
 import tableReader.TableReader
 import expression.Expression
 
-class Table[T <: Expression](content: HashMap[TableCellPosition, TableCell[T]]) {
+class Table[T <: Expression](content: HashMap[TableCellPosition, TableCell[T]]) extends TableView[T] {
     def get(pos: TableCellPosition): Option[TableCell[T]] = {
         content.get(pos)
     }

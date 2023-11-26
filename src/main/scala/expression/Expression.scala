@@ -3,10 +3,6 @@ package expression
 
 import table.TableCellPosition
 
-abstract class ExpressionEvaluationContext {
-    def get(pos: TableCellPosition): Expression
-}
-
 abstract class Expression {
     def evaluate(context: ExpressionEvaluationContext): ConstantExpression
     def referencedPositions: Iterable[TableCellPosition]

@@ -5,7 +5,7 @@ import scala.util.matching.Regex
 
 final case class TableCellPosition(row: Int, column: Int) {
     override def toString(): String = {
-        f"${TableCellPosition.getColName(column)}${row + 1}"
+        f"${TableCellPosition.getColumnName(column)}${TableCellPosition.getRowName(row)}"
     }
 }
 
@@ -17,29 +17,31 @@ object TableCellPosition {
         """^([A-Z]+)(\d+)$""".r.findFirstMatchIn(s).map(
             m => new TableCellPosition(
                 m.group(2).toInt - 1,
-                getColIndex(m.group(1))
+                getColumnIndex(m.group(1))
             )
         ).filter(
             pos => (pos.column >= 0) && (pos.row >= 0)
         )
     }
 
-    private def getColIndex(col: String): Int = {
+    private def getColumnIndex(columnName: String): Int = {
         // assertion: all chars in col are uppercase letters
         var index: Int = 0
-        for (c <- col) {
+        for (c <- columnName) {
             index = LETTERS.length() * index + (c.toInt - FIRST_LETTER_INDEX)
         }
         index
     }
 
-    private def getColName(col: Int): String = {
+    def getColumnName(columnIndex: Int): String = {
         var ret = ""
-        var temp = col + 1
+        var temp = columnIndex + 1
         while (temp > 0) {
-            ret = ret + LETTERS(col % LETTERS.length())
+            ret = ret + LETTERS(columnIndex % LETTERS.length())
             temp /= LETTERS.length()
         }
         return ret
     }
+
+    def getRowName(rowIndex: Int): String = (rowIndex + 1).toString()
 }
