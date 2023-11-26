@@ -16,6 +16,9 @@ class TableTest extends FunSuite {
             ).iterator
         ))
 
+        assert(table.lastColumn == Some(4))
+        assert(table.lastRow == Some(2))
+
         assert(table.get(TableCellPosition.parse("A1").get).isEmpty)
         assert(table.get(TableCellPosition.parse("B1").get).get == TableCell(IntExpression(323)))
         assert(table.get(TableCellPosition.parse("C1").get).get == TableCell(IntExpression(22)))

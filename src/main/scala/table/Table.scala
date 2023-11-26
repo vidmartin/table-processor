@@ -12,6 +12,8 @@ class Table[T <: Expression](content: HashMap[TableCellPosition, TableCell[T]]) 
 
     def withSet(pos: TableCellPosition, cell: TableCell[T]) = new Table(content.updated(pos, cell))
     def nonEmptyPositions: Iterable[TableCellPosition] = content.keys
+    def lastRow: Option[Int] = content.keys.iterator.map(pos => pos.row).maxOption
+    def lastColumn: Option[Int] = content.keys.iterator.map(pos => pos.column).maxOption
 }
 
 object Table {
