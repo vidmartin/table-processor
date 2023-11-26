@@ -1,9 +1,11 @@
+
 import tableReader.TableReader
 import tableReader.CsvReader
 import tableReader.CsvConfig
 import scala.io.Source
 import table.Table
 import evaluation.TopSortTableEvaluator
+import scala.util.Using
 
 object Main extends App {
     def loadOpts(): BaseOpts = {
@@ -63,9 +65,12 @@ object Main extends App {
 
     def run(opts: Opts): Unit = {
         println(f"loading file ${opts.inputFile}")
-        val file = Source.fromFile(opts.inputFile)
-        val reader = new CsvReader(file, CsvConfig(opts.separator))
-        val inputTable = Table.parse(reader)
+        val inputTable = Using(Source.fromFile(opts.inputFile)) {
+            file => {
+                val reader = new CsvReader(file, CsvConfig(opts.separator))
+                Table.parse(reader)
+            }
+        }.get
         val resultTable = TopSortTableEvaluator.evaluateTable(inputTable)
 
         // TODO: write result table
