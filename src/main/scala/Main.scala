@@ -12,8 +12,17 @@ import tablePrinter.ConstantExpressionFormatter
 import java.io.File
 import scala.Console
 import java.util.stream
-import tablePrinter.StringWriter
+import stringWriter.StringWriter
 import tablePrinter.TableViewWithHeaders
+import tablePrinter.TablePrinter
+import SupportedFormat.CSV
+import SupportedFormat.MD
+import tablePrinter.MarkdownTablePrinter
+import expression.ConstantExpression
+import expression.Expression
+import table.TableView
+import expression.StringExpression
+import stringWriter._
 
 object Main extends App {
     def loadOpts(): BaseOpts = {
@@ -73,22 +82,53 @@ object Main extends App {
 
     def run(opts: Opts): Unit = {
         println(f"loading file ${opts.inputFile}")
-        val inputTable = Using(Source.fromFile(opts.inputFile)) {
+        val inputTable = getInputTable(opts)
+        val resultTable = getResultTable(opts, inputTable)
+        val outputView = getOutputView(opts, resultTable)
+        val tablePrinter = getTablePrinter(opts)
+        Using(getOutputStringWriter(opts)) {
+            outputStringWriter => tablePrinter.printTable(outputView, outputStringWriter)
+        }
+    }
+
+    def getInputTable(opts: Opts): Table[Expression] = {
+        Using(Source.fromFile(opts.inputFile)) {
             file => {
                 val reader = new CsvReader(file, CsvConfig(opts.separator))
                 Table.parse(reader)
             }
         }.get
-        val resultTable = TopSortTableEvaluator.evaluateTable(inputTable)
-        val resultView = new TableViewWithHeaders(resultTable)
-        // TODO: create table printer dynamically based on opts
-        val printer = new CsvTablePrinter(CsvConfig(opts.separator), ConstantExpressionFormatter)
-        printer.printTable(resultView, new StringWriter {
-            override def write(s: String): Unit = print(s)
-            override def writeln(s: String): Unit = println(s)
-        })
-        // TODO: write result table
-        // TODO: file closing
+    }
+
+    def getResultTable(opts: Opts, table: Table[Expression]): Table[ConstantExpression] = {
+        TopSortTableEvaluator.evaluateTable(table)
+    }
+
+    def getOutputView[T >: StringExpression <: Expression](opts: Opts, table: Table[T]): TableView[T] = {
+        if (opts.headers) {
+            new TableViewWithHeaders(table)
+        } else {
+            table
+        }
+    }
+
+    def getTablePrinter(opts: Opts): TablePrinter[ConstantExpression] = {
+        opts.format match {
+            case CSV => new CsvTablePrinter(CsvConfig(opts.separator), ConstantExpressionFormatter)
+            case MD => new MarkdownTablePrinter(ConstantExpressionFormatter)
+            case _ => throw new NotImplementedError()
+        }
+    }
+
+    def getOutputStringWriter(opts: Opts): StringWriter = {
+        (opts.outputFile, opts.stdout) match {
+            case (Some(filename), true) => new MultiStringWriter(List(
+                new StdoutStringWriter(),
+                new FileStringWriter(filename)
+            ))
+            case (None, _) => new StdoutStringWriter()
+            case (Some(filename), _) => new FileStringWriter(filename)
+        }
     }
 
     loadOpts() match {

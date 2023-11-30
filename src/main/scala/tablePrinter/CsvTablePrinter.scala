@@ -6,6 +6,7 @@ import expression.ConstantExpression
 import expression.Expression
 import table.TableView
 import table.TableCellPosition
+import stringWriter.StringWriter
 
 class CsvTablePrinter[T <: Expression](
     csvConfig: CsvConfig,
