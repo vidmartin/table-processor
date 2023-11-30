@@ -18,7 +18,6 @@ class MarkdownTablePrinter[T <: Expression](
     }
 
     private def printHeader(table: TableView[T], destination: StringWriter): Unit = {
-        val lastColumn = table.lastColumn.getOrElse(0)
         if (table.hasHeaderRow) {
             printRow(table, destination, 0)
         } else {
@@ -28,7 +27,7 @@ class MarkdownTablePrinter[T <: Expression](
     }
 
     private def printRows(table: TableView[T], destination: StringWriter): Unit = {
-        val lastRow = table.lastRow.getOrElse(0)
+        val lastRow = table.lastRow.getOrElse(-1)
         for (i <- Iterable.range(getFirstDataRow(table), lastRow + 1)) {
             printRow(table, destination, i)
         }
@@ -49,7 +48,7 @@ class MarkdownTablePrinter[T <: Expression](
     }
 
     private def printRowWith(table: TableView[T], destination: StringWriter, contentGetter: Int => String): Unit = {
-        val lastColumn = table.lastColumn.getOrElse(0)
+        val lastColumn = table.lastColumn.getOrElse(-1)
         destination.writeln(
             Iterable.range(0, lastColumn + 1).map(
                 i => fixSpaces(contentGetter(i))
