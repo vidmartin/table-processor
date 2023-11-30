@@ -14,6 +14,8 @@ class Table[T <: Expression](content: HashMap[TableCellPosition, TableCell[T]]) 
     def nonEmptyPositions: Iterable[TableCellPosition] = content.keys
     lazy val lastRow: Option[Int] = content.keys.iterator.map(pos => pos.row).maxOption
     lazy val lastColumn: Option[Int] = content.keys.iterator.map(pos => pos.column).maxOption
+    override def hasHeaderRow: Boolean = false
+    override def hasHeaderColumn: Boolean = false
 }
 
 object Table {

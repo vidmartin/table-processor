@@ -42,4 +42,6 @@ class TableViewWithHeaders[T >: StringExpression <: Expression](wrapped: TableVi
             wrapped.nonEmptyPositions.map(pos => TableCellPosition(pos.row + 1, pos.column + 1)),
         )
     }
+    override def hasHeaderRow: Boolean = true
+    override def hasHeaderColumn: Boolean = true
 }

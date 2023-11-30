@@ -8,4 +8,6 @@ abstract class TableView[T <: Expression] {
     def lastRow: Option[Int]
     def lastColumn: Option[Int]
     def nonEmptyPositions: Iterable[TableCellPosition]
+    def hasHeaderRow: Boolean
+    def hasHeaderColumn: Boolean
 }
