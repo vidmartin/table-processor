@@ -1,4 +1,7 @@
 
+package cliOpts
+
+import enum._
 import org.scalatest.FunSuite
 
 class FlagsTestKit {

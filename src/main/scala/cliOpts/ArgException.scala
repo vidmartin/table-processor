@@ -1,4 +1,6 @@
 
+package cliOpts
+
 abstract class ArgException(message: String) extends Exception(message)
 final case class MultipleOccurencesArgException(message: String) extends ArgException(message)
 final case class AlreadyExistsArgException(message: String) extends ArgException(message)

@@ -1,4 +1,6 @@
 
+package cliOpts
+
 abstract class BaseCommandLineOption(
 ) {
     def optRegister: BaseOptRegister

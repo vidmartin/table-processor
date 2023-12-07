@@ -1,4 +1,6 @@
 
+package enum
+
 import scala.collection.immutable.HashMap
 
 abstract class EnumCase {

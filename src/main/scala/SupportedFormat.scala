@@ -1,4 +1,6 @@
 
+import enum._
+
 sealed case class SupportedFormat(override val name: String) extends EnumCase
 object SupportedFormat extends EnumCompanion[SupportedFormat] {
     object CSV extends SupportedFormat("csv")

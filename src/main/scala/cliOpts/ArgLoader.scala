@@ -1,4 +1,6 @@
 
+package cliOpts
+
 import scala.collection.mutable.HashMap
 
 private class ArgLoader(registry: OptRegistry) {

@@ -23,6 +23,7 @@ import expression.Expression
 import table.TableView
 import expression.StringExpression
 import stringWriter._
+import cliOpts._
 
 object Main extends App {
     def loadOpts(): BaseOpts = {

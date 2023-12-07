@@ -1,4 +1,6 @@
 
+package cliOpts
+
 import scala.collection.mutable.{ListBuffer, HashMap}
 import scala.collection.immutable.AbstractSeq
 
