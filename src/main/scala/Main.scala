@@ -1,3 +1,4 @@
+import cliOpts.optRegister.{StringOptRegister, FlagOptRegister, EnumOptRegister}
 
 import tableReader.TableReader
 import tableReader.CsvReader

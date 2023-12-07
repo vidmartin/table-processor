@@ -3,6 +3,7 @@ package cliOpts
 
 import enum._
 import org.scalatest.FunSuite
+import optRegister.{StringOptRegister, FlagOptRegister, EnumOptRegister}
 
 class FlagsTestKit {
     val opts = new OptRegistry

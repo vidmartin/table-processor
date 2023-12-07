@@ -1,5 +1,6 @@
 
 package cliOpts
+import optRegister.{BaseOptRegister, OptRegister}
 
 abstract class BaseCommandLineOption(
 ) {

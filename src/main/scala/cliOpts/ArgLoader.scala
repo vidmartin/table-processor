@@ -2,6 +2,8 @@
 package cliOpts
 
 import scala.collection.mutable.HashMap
+import cliOpts.optRegister._
+import cliOpts._
 
 private class ArgLoader(registry: OptRegistry) {
     def load(args: Array[String], swallowMissingArgs: Option[() => Boolean] = None): Boolean = {
