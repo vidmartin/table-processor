@@ -6,6 +6,3 @@ abstract class OptRegister[T] extends BaseOptRegister {
     def get: T = getOptional.get
     def getOptional: Option[T]
 }
-
-// TODO: range opt
-// TODO: multi opt
