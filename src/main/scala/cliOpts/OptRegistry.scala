@@ -3,6 +3,7 @@ package cliOpts
 
 import scala.collection.mutable.{ListBuffer, HashMap}
 import scala.collection.immutable.AbstractSeq
+import cliOpt.BaseCommandLineOption
 
 class OptRegistry extends Iterable[BaseCommandLineOption] {
     private val longNameMap: HashMap[String, BaseCommandLineOption] = new HashMap()

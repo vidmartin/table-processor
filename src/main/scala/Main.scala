@@ -1,3 +1,4 @@
+import cliOpts.cliOpt.{CommandLineOption, RequiredCommandLineOption}
 import cliOpts.optRegister.{StringOptRegister, FlagOptRegister, EnumOptRegister}
 
 import tableReader.TableReader
