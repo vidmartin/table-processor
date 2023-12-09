@@ -6,7 +6,7 @@ import table.TableView
 import table.TableCellPosition
 import table.TableCell
 
-class ValueFilter(
+final case class ValueFilter(
     column: Int,
     comparator: Comparator,
     value: ConstantExpression
