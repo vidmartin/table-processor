@@ -7,15 +7,20 @@ import expression.Expression
 import table.TableView
 import table.TableCellPosition
 import stringWriter.StringWriter
+import filters.RowFilter
+import table.OffsetTableView
 
 class CsvTablePrinter[T <: Expression](
     csvConfig: CsvConfig,
     expressionFormatter: ExpressionFormatter[T]
 ) extends TablePrinter[T] {
-    override def printTable(table: TableView[T], destination: StringWriter): Unit = {
+    override def printTable(table: TableView[T], destination: StringWriter, rowFilter: RowFilter[T]): Unit = {
         // TODO: escaping
+        val evalFiltersUpon = new OffsetTableView(0, if (table.hasHeaderColumn) 1 else 0, table)
         for (i <- Iterable.range(0, table.lastRow.getOrElse(0) + 1)) {
-            printRow(table, destination, i)
+            if ((table.hasHeaderRow && i == 0) || rowFilter.evaluate(i, evalFiltersUpon)) {
+                printRow(table, destination, i)
+            }
         }
     }
 

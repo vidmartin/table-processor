@@ -1,6 +1,6 @@
+
 import cliOpts.cliOpt.{CommandLineOption, RequiredCommandLineOption}
 import cliOpts.optRegister.{StringOptRegister, FlagOptRegister, EnumOptRegister}
-
 import tableReader.TableReader
 import tableReader.CsvReader
 import config.CsvConfig
@@ -29,6 +29,7 @@ import cliOpts._
 import filters.RowFilter
 import cliOpts.optRegister.ValueFilterOptRegister
 import scala.collection.mutable.ArrayBuffer
+import filters.MultiFilter
 
 object Main extends App {
     def loadOpts(): BaseOpts = {
@@ -98,7 +99,7 @@ object Main extends App {
         val outputView = getOutputView(opts, resultTable)
         val tablePrinter = getTablePrinter(opts)
         Using(getOutputStringWriter(opts)) {
-            outputStringWriter => tablePrinter.printTable(outputView, outputStringWriter)
+            outputStringWriter => tablePrinter.printTable(outputView, outputStringWriter, new MultiFilter(opts.filters))
         }
     }
 
