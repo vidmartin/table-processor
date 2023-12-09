@@ -13,13 +13,14 @@ import table.TableCell
 import expression.StringExpression
 import expression.FloatExpression
 import scala.util.matching.Regex
+import filters.MultiFilter
 
 class MarkdownTablePrinterTest extends FunSuite {
     test("test1 (empty table)") {
         val table = new Table[ConstantExpression](new HashMap())
         val printer = new MarkdownTablePrinter(ConstantExpressionFormatter)
         val writer = new InMemoryStringWriter()
-        printer.printTable(table, writer)
+        printer.printTable(table, writer, new MultiFilter(List.empty))
 
         val lines = writer.get.linesIterator.toArray
         assert(lines.length <= 2)
@@ -35,7 +36,7 @@ class MarkdownTablePrinterTest extends FunSuite {
         ))
         val printer = new MarkdownTablePrinter(ConstantExpressionFormatter)
         val writer = new InMemoryStringWriter()
-        printer.printTable(table, writer)
+        printer.printTable(table, writer, new MultiFilter(List.empty))
 
         val lines = writer.get.linesIterator.toArray
         assert(lines.length == 4 || (lines.length == 5 && lines(4).forall(_.isWhitespace)))
