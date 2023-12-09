@@ -1,4 +1,7 @@
 
+import filters.RowFilter
+import expression.ConstantExpression
+
 abstract class BaseOpts {
     def showHelp: Boolean
 }
@@ -15,7 +18,7 @@ final case class Opts(
     headers: Boolean,
     outputFile: Option[String],
     stdout: Boolean,
-    filters: List[Filter],
+    filters: List[RowFilter[ConstantExpression]],
     range: Option[Range],
 ) extends BaseOpts {
     def showHelp: Boolean = false

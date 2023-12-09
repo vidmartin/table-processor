@@ -24,7 +24,7 @@ object TableCellPosition {
         )
     }
 
-    private def getColumnIndex(columnName: String): Int = {
+    def getColumnIndex(columnName: String): Int = {
         // assertion: all chars in col are uppercase letters
         var index: Int = 0
         for (c <- columnName) {
