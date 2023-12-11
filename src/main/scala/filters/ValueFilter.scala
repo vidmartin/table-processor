@@ -18,7 +18,7 @@ final case class ValueFilter(
         }
     }
 
-    def evalCell(cell: TableCell[ConstantExpression]): Boolean = {
+    private def evalCell(cell: TableCell[ConstantExpression]): Boolean = {
         comparator match {
             case Comparator.EQ => cell.expr == value
             case Comparator.NE => cell.expr != value
@@ -30,7 +30,7 @@ final case class ValueFilter(
         }
     }
 
-    def evalLessThan(cell: TableCell[ConstantExpression]): Boolean = {
+    private def evalLessThan(cell: TableCell[ConstantExpression]): Boolean = {
         (cell.expr.getInt, value.getInt) match {
             case (Some(a), Some(b)) => a < b
             case _ => (cell.expr.getFloat, value.getFloat) match {
