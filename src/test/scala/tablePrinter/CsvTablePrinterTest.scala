@@ -12,14 +12,14 @@ import expression.IntExpression
 import table.TableCell
 import expression.StringExpression
 import expression.FloatExpression
-import filters.MultiFilter
+import filters.AndFilter
 
 class CsvTablePrinterTest extends FunSuite {
     test("test1 (empty table)") {
         val table = new Table[ConstantExpression](new HashMap())
         val printer = new CsvTablePrinter(new CsvConfig(","), ConstantExpressionFormatter)
         val writer = new InMemoryStringWriter()
-        printer.printTable(table, writer, new MultiFilter(List.empty))
+        printer.printTable(table, writer, new AndFilter(List.empty))
 
         val lines = writer.get.linesIterator.toArray
         assert(lines.length <= 2)
@@ -35,7 +35,7 @@ class CsvTablePrinterTest extends FunSuite {
         ))
         val printer = new CsvTablePrinter(new CsvConfig(","), ConstantExpressionFormatter)
         val writer = new InMemoryStringWriter()
-        printer.printTable(table, writer, new MultiFilter(List.empty))
+        printer.printTable(table, writer, new AndFilter(List.empty))
 
         val lines = writer.get.linesIterator.toArray
         assert(lines.length == 2 || (lines.length == 3 && lines(2).forall(_.isWhitespace)))

@@ -29,7 +29,7 @@ import cliOpts._
 import filters.RowFilter
 import cliOpts.optRegister.ValueFilterOptRegister
 import scala.collection.mutable.ArrayBuffer
-import filters.MultiFilter
+import filters.AndFilter
 import filters.EmptinessFilter
 import cliOpts.optRegister.ColumnPredicateFilterOptRegister
 
@@ -109,7 +109,7 @@ object Main extends App {
         val outputView = getOutputView(opts, resultTable)
         val tablePrinter = getTablePrinter(opts)
         Using(getOutputStringWriter(opts)) {
-            outputStringWriter => tablePrinter.printTable(outputView, outputStringWriter, new MultiFilter(opts.filters))
+            outputStringWriter => tablePrinter.printTable(outputView, outputStringWriter, new AndFilter(opts.filters))
         }
     }
 
