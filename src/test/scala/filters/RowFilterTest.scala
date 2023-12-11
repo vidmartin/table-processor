@@ -120,4 +120,48 @@ class RowFilterTest extends FunSuite {
             ).toList == List(false, false, false, false)
         )
     }
+
+    test("test11") {
+        val filter = new AndFilter[ConstantExpression](List())
+        assert(
+            Iterable.range(0, table.lastRow.get + 1).map(
+                row => filter.evaluate(row, table)
+            ).toList == List(true, true, true, true)
+        )
+    }
+
+    test("test12") {
+        val filter = new AndFilter[ConstantExpression](List(
+            ValueFilter(0, Comparator.GT, IntExpression(60))
+        ))
+        assert(
+            Iterable.range(0, table.lastRow.get + 1).map(
+                row => filter.evaluate(row, table)
+            ).toList == List(true, false, false, true)
+        )
+    }
+
+    test("test13") {
+        val filter = new AndFilter[ConstantExpression](List(
+            ValueFilter(0, Comparator.GT, IntExpression(60)),
+            ValueFilter(1, Comparator.LT, IntExpression(100))
+        ))
+        assert(
+            Iterable.range(0, table.lastRow.get + 1).map(
+                row => filter.evaluate(row, table)
+            ).toList == List(false, false, false, false)
+        )
+    }
+
+    test("test14") {
+        val filter = new AndFilter[ConstantExpression](List(
+            ValueFilter(0, Comparator.GT, IntExpression(60)),
+            ValueFilter(2, Comparator.LT, IntExpression(100))
+        ))
+        assert(
+            Iterable.range(0, table.lastRow.get + 1).map(
+                row => filter.evaluate(row, table)
+            ).toList == List(false, false, false, true)
+        )
+    }    
 }
