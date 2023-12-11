@@ -11,8 +11,6 @@ import expression.FloatExpression
 import expression.StringExpression
 
 class ValueFilterOptRegister(load: ValueFilter => Unit) extends DelegatingOptRegister[ValueFilter](load) {
-    override def hasValue: Boolean = false
-    override def isDefined: Boolean = false
     override def getOptional: Option[ValueFilter] = {
         throw new NotImplementedError()
     }

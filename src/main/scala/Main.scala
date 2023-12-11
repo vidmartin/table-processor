@@ -30,6 +30,8 @@ import filters.RowFilter
 import cliOpts.optRegister.ValueFilterOptRegister
 import scala.collection.mutable.ArrayBuffer
 import filters.MultiFilter
+import filters.EmptinessFilter
+import cliOpts.optRegister.ColumnPredicateFilterOptRegister
 
 object Main extends App {
     def loadOpts(): BaseOpts = {
@@ -68,6 +70,14 @@ object Main extends App {
         val filter = opts.addOption(new CommandLineOption(
             new ValueFilterOptRegister(filters.addOne(_)), "filter", None,
             "usage: --filter [COLUMN] [OPERATOR] [VALUE]. This option may be specified multiple times. For each occurence of this option, all rows that don't satisfy the given condition will be excluded from the result."
+        ))
+        val filterIsEmpty = opts.addOption(new CommandLineOption(
+            new ColumnPredicateFilterOptRegister(col => filters.addOne(new EmptinessFilter(col, true))), "filter-is-empty", None,
+            "usage: --filter-is-empty [COLUMN]. When specified, only rows where the given column is empty will be outputted."
+        ))
+        val filterIsNotEmpty = opts.addOption(new CommandLineOption(
+            new ColumnPredicateFilterOptRegister(col => filters.addOne(new EmptinessFilter(col, false))), "filter-is-not-empty", None,
+            "usage: --filter-is-not-empty [COLUMN]. When specified, rows where the given column is empty will be excluded from the result."
         ))
         val help = opts.addOption(new CommandLineOption(
             new FlagOptRegister, "help", Some('h'),
