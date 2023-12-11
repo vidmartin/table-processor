@@ -22,19 +22,19 @@ final case class ValueFilter(
         comparator match {
             case Comparator.EQ => cell.expr == value
             case Comparator.NE => cell.expr != value
-            case Comparator.LT => evalLessThan(cell)
-            case Comparator.GT => cell.expr != value && !evalLessThan(cell)
-            case Comparator.LE => cell.expr == value || evalLessThan(cell)
-            case Comparator.GE => !evalLessThan(cell)
+            case Comparator.LT => evalLessThan(cell.expr, value, false)
+            case Comparator.GT => evalLessThan(value, cell.expr, false)
+            case Comparator.LE => evalLessThan(cell.expr, value, true)
+            case Comparator.GE => evalLessThan(value, cell.expr, true)
             case _ => throw new NotImplementedError()
         }
     }
 
-    private def evalLessThan(cell: TableCell[ConstantExpression]): Boolean = {
-        (cell.expr.getInt, value.getInt) match {
-            case (Some(a), Some(b)) => a < b
-            case _ => (cell.expr.getFloat, value.getFloat) match {
-                case (Some(a), Some(b)) => a < b
+    private def evalLessThan(lhs: ConstantExpression, rhs: ConstantExpression, orEqual: Boolean): Boolean = {
+        (lhs.getInt, rhs.getInt) match {
+            case (Some(a), Some(b)) => a < b || (orEqual && a == b)
+            case _ => (lhs.getFloat, rhs.getFloat) match {
+                case (Some(a), Some(b)) => a < b || (orEqual && a == b)
                 case _ => false
             }
         }
