@@ -15,7 +15,7 @@ class ValueFilterOptRegisterTest extends FunSuite {
     test("test1") {
         val list = new ArrayBuffer[RowFilter[ConstantExpression]]
         val reg = new ValueFilterOptRegister(list.addOne(_))
-        reg.load(List("A", "<", "7").iterator)
+        reg.load(List("C", "<", "7").iterator)
         assert(list.toList == List(
             ValueFilter(2, Comparator.LT, IntExpression(7))
         ))
@@ -28,7 +28,7 @@ class ValueFilterOptRegisterTest extends FunSuite {
         reg.load(List("FG", "!=", "bbbbaaaa").iterator)
         assert(list.toList == List(
             ValueFilter(2, Comparator.EQ, StringExpression("aaaabbbb")),
-            ValueFilter(162, Comparator.NE, StringExpression("bbbbaaaa"))
+            ValueFilter(136, Comparator.NE, StringExpression("bbbbaaaa"))
         ))
     }
 }
