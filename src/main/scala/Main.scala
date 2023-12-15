@@ -1,6 +1,6 @@
+
 import cliOpts.cliOpt.{CommandLineOption, RequiredCommandLineOption}
 import cliOpts.optRegister.{StringOptRegister, FlagOptRegister, EnumOptRegister}
-
 import tableReader.TableReader
 import tableReader.CsvReader
 import config.CsvConfig
@@ -26,10 +26,17 @@ import table.TableView
 import expression.StringExpression
 import stringWriter._
 import cliOpts._
+import filters.RowFilter
+import cliOpts.optRegister.ValueFilterOptRegister
+import scala.collection.mutable.ArrayBuffer
+import filters.AndFilter
+import filters.EmptinessFilter
+import cliOpts.optRegister.ColumnPredicateFilterOptRegister
 
 object Main extends App {
     def loadOpts(): BaseOpts = {
         val opts = new OptRegistry
+        val filters = new ArrayBuffer[RowFilter[ConstantExpression]]
 
         val inputFile = opts.addOption(new RequiredCommandLineOption(
             new StringOptRegister, "input-file", Some('i'),
@@ -60,6 +67,18 @@ object Main extends App {
             new FlagOptRegister, "stdout", None,
             "whether to write the output to STDOUT; if output file is not specified, this is considered to be true implicitly"
         ))
+        val filter = opts.addOption(new CommandLineOption(
+            new ValueFilterOptRegister(filters.addOne(_)), "filter", None,
+            "usage: --filter [COLUMN] [OPERATOR] [VALUE]. This option may be specified multiple times. For each occurence of this option, all rows that don't satisfy the given condition will be excluded from the result."
+        ))
+        val filterIsEmpty = opts.addOption(new CommandLineOption(
+            new ColumnPredicateFilterOptRegister(col => filters.addOne(new EmptinessFilter(col, true))), "filter-is-empty", None,
+            "usage: --filter-is-empty [COLUMN]. When specified, only rows where the given column is empty will be outputted."
+        ))
+        val filterIsNotEmpty = opts.addOption(new CommandLineOption(
+            new ColumnPredicateFilterOptRegister(col => filters.addOne(new EmptinessFilter(col, false))), "filter-is-not-empty", None,
+            "usage: --filter-is-not-empty [COLUMN]. When specified, rows where the given column is empty will be excluded from the result."
+        ))
         val help = opts.addOption(new CommandLineOption(
             new FlagOptRegister, "help", Some('h'),
             "when specified, don't do anything, just print help and exit"
@@ -78,7 +97,7 @@ object Main extends App {
             headers = headers.optRegister.get,
             outputFile = outputFile.optRegister.getOptional,
             stdout = stdout.optRegister.get,
-            filters = List(),
+            filters = List.from(filters),
             range = None
         )
     }
@@ -90,7 +109,7 @@ object Main extends App {
         val outputView = getOutputView(opts, resultTable)
         val tablePrinter = getTablePrinter(opts)
         Using(getOutputStringWriter(opts)) {
-            outputStringWriter => tablePrinter.printTable(outputView, outputStringWriter)
+            outputStringWriter => tablePrinter.printTable(outputView, outputStringWriter, new AndFilter(opts.filters))
         }
     }
 

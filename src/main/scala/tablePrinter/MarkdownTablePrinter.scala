@@ -8,13 +8,15 @@ import table.TableView
 import stringWriter.StringWriter
 import table.TableCellPosition
 import expression.EmptyExpression
+import filters.RowFilter
+import table.OffsetTableView
 
 class MarkdownTablePrinter[T <: Expression](
     expressionFormatter: ExpressionFormatter[T]
 ) extends TablePrinter[T] {
-    override def printTable(table: TableView[T], destination: StringWriter): Unit = {
+    override def printTable(table: TableView[T], destination: StringWriter, rowFilter: RowFilter[T]): Unit = {
         printHeader(table, destination)
-        printRows(table, destination)
+        printRows(table, destination, rowFilter)
     }
 
     private def printHeader(table: TableView[T], destination: StringWriter): Unit = {
@@ -26,10 +28,13 @@ class MarkdownTablePrinter[T <: Expression](
         printRowWith(table, destination, i => "---")
     }
 
-    private def printRows(table: TableView[T], destination: StringWriter): Unit = {
+    private def printRows(table: TableView[T], destination: StringWriter, rowFilter: RowFilter[T]): Unit = {
         val lastRow = table.lastRow.getOrElse(-1)
+        val evalFiltersUpon = new OffsetTableView(0, if (table.hasHeaderColumn) 1 else 0, table)
         for (i <- Iterable.range(getFirstDataRow(table), lastRow + 1)) {
-            printRow(table, destination, i)
+            if (rowFilter.evaluate(i, evalFiltersUpon)) {
+                printRow(table, destination, i)
+            }
         }
     }
 
