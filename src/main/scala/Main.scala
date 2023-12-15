@@ -1,6 +1,6 @@
 
 import cliOpts.cliOpt.{CommandLineOption, RequiredCommandLineOption}
-import cliOpts.optRegister.{StringOptRegister, FlagOptRegister, EnumOptRegister}
+import cliOpts.optRegister._
 import tableReader.TableReader
 import tableReader.CsvReader
 import config.CsvConfig
@@ -79,6 +79,10 @@ object Main extends App {
             new ColumnPredicateFilterOptRegister(col => filters.addOne(new EmptinessFilter(col, false))), "filter-is-not-empty", None,
             "usage: --filter-is-not-empty [COLUMN]. When specified, rows where the given column is empty will be excluded from the result."
         ))
+        val range = opts.addOption(new CommandLineOption(
+            new RangeOptRegister, "range", None,
+            "usage: --range [UPPER LEFT] [LOWER RIGHT]. Only output cells from the given range."
+        ))
         val help = opts.addOption(new CommandLineOption(
             new FlagOptRegister, "help", Some('h'),
             "when specified, don't do anything, just print help and exit"
@@ -98,7 +102,7 @@ object Main extends App {
             outputFile = outputFile.optRegister.getOptional,
             stdout = stdout.optRegister.get,
             filters = List.from(filters),
-            range = None
+            range = range.optRegister.getOptional
         )
     }
 

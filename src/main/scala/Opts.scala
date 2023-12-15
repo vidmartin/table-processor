@@ -1,6 +1,7 @@
 
 import filters.RowFilter
 import expression.ConstantExpression
+import table.TableCellRange
 
 abstract class BaseOpts {
     def showHelp: Boolean
@@ -19,7 +20,7 @@ final case class Opts(
     outputFile: Option[String],
     stdout: Boolean,
     filters: List[RowFilter[ConstantExpression]],
-    range: Option[Range],
+    range: Option[TableCellRange],
 ) extends BaseOpts {
     def showHelp: Boolean = false
 }
