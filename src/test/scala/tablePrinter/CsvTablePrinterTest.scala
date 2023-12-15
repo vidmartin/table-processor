@@ -19,7 +19,11 @@ class CsvTablePrinterTest extends FunSuite {
         val table = new Table[ConstantExpression](new HashMap())
         val printer = new CsvTablePrinter(new CsvConfig(","), ConstantExpressionFormatter)
         val writer = new InMemoryStringWriter()
-        printer.printTable(table, writer, new AndFilter(List.empty))
+        printer.printTable(
+            TablePrintOptions(
+                table, new AndFilter(Iterable.empty), false, false
+            ), writer
+        )
 
         val lines = writer.get.linesIterator.toArray
         assert(lines.length <= 2)
@@ -35,7 +39,11 @@ class CsvTablePrinterTest extends FunSuite {
         ))
         val printer = new CsvTablePrinter(new CsvConfig(","), ConstantExpressionFormatter)
         val writer = new InMemoryStringWriter()
-        printer.printTable(table, writer, new AndFilter(List.empty))
+        printer.printTable(
+            TablePrintOptions(
+                table, new AndFilter(Iterable.empty), false, false
+            ), writer
+        )
 
         val lines = writer.get.linesIterator.toArray
         assert(lines.length == 2 || (lines.length == 3 && lines(2).forall(_.isWhitespace)))

@@ -9,8 +9,7 @@ import expression.ConstantExpression
 
 abstract class TablePrinter[T <: Expression] {
     def printTable(
-        table: TableView[T],
+        options: TablePrintOptions[T],
         destination: StringWriter,
-        rowFilter: RowFilter[T]
     ): Unit
 }

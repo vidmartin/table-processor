@@ -43,13 +43,13 @@ class TableEvaluatorTest extends FunSuite {
         for (evaluator <- evaluators) {
             val result = evaluator.evaluateTable(table)
 
-            assert(result.get(TableCellPosition.parse("A1").get).isEmpty)
-            assert(result.get(TableCellPosition.parse("B2").get).get == TableCell(IntExpression(7)))
-            assert(result.get(TableCellPosition.parse("D4").get).get == TableCell(IntExpression(6)))
-            assert(result.get(TableCellPosition.parse("E4").get).get == TableCell(IntExpression(29)))
-            assert(result.get(TableCellPosition.parse("E5").get).get == TableCell(IntExpression(42)))
-            assert(result.get(TableCellPosition.parse("F6").get).get == TableCell(IntExpression(13)))
-            assert(result.get(TableCellPosition.parse("Z8").get).isEmpty)
+            assert(result.getLocal(TableCellPosition.parse("A1").get).isEmpty)
+            assert(result.getLocal(TableCellPosition.parse("B2").get).get == TableCell(IntExpression(7)))
+            assert(result.getLocal(TableCellPosition.parse("D4").get).get == TableCell(IntExpression(6)))
+            assert(result.getLocal(TableCellPosition.parse("E4").get).get == TableCell(IntExpression(29)))
+            assert(result.getLocal(TableCellPosition.parse("E5").get).get == TableCell(IntExpression(42)))
+            assert(result.getLocal(TableCellPosition.parse("F6").get).get == TableCell(IntExpression(13)))
+            assert(result.getLocal(TableCellPosition.parse("Z8").get).isEmpty)
         }
     }
 

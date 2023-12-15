@@ -6,16 +6,16 @@ import tableReader.TableReader
 import expression.Expression
 
 class Table[T <: Expression](content: HashMap[TableCellPosition, TableCell[T]]) extends TableView[T] {
-    def get(pos: TableCellPosition): Option[TableCell[T]] = {
+    def getLocal(pos: TableCellPosition): Option[TableCell[T]] = {
         content.get(pos)
     }
 
     def withSet(pos: TableCellPosition, cell: TableCell[T]) = new Table(content.updated(pos, cell))
-    def nonEmptyPositions: Iterable[TableCellPosition] = content.keys
-    lazy val lastRow: Option[Int] = content.keys.iterator.map(pos => pos.row).maxOption
-    lazy val lastColumn: Option[Int] = content.keys.iterator.map(pos => pos.column).maxOption
-    override def hasHeaderRow: Boolean = false
-    override def hasHeaderColumn: Boolean = false
+    def nonEmptyLocalPositions: Iterable[TableCellPosition] = content.keys
+    lazy val lastLocalRow: Option[Int] = content.keys.iterator.map(pos => pos.row).maxOption
+    lazy val lastLocalColumn: Option[Int] = content.keys.iterator.map(pos => pos.column).maxOption
+    override def getGlobalColumn(localColumn: Int): Int = localColumn
+    override def getGlobalRow(localRow: Int): Int = localRow
 }
 
 object Table {

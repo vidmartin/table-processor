@@ -34,7 +34,7 @@ class RowFilterTest extends FunSuite {
     test("test1") {
         val filter = ValueFilter(0, Comparator.GT, IntExpression(60))
         assert(
-            Iterable.range(0, table.lastRow.get + 1).map(
+            Iterable.range(0, table.lastLocalRow.get + 1).map(
                 row => filter.evaluate(row, table)
             ).toList == List(true, false, false, true)
         )
@@ -43,7 +43,7 @@ class RowFilterTest extends FunSuite {
     test("test2") {
         val filter = ValueFilter(1, Comparator.GT, IntExpression(60))
         assert(
-            Iterable.range(0, table.lastRow.get + 1).map(
+            Iterable.range(0, table.lastLocalRow.get + 1).map(
                 row => filter.evaluate(row, table)
             ).toList == List(false, false, true, false)
         )
@@ -52,7 +52,7 @@ class RowFilterTest extends FunSuite {
     test("test3") {
         val filter = EmptinessFilter(1, false)
         assert(
-            Iterable.range(0, table.lastRow.get + 1).map(
+            Iterable.range(0, table.lastLocalRow.get + 1).map(
                 row => filter.evaluate(row, table)
             ).toList == List(false, true, true, false)
         )
@@ -61,7 +61,7 @@ class RowFilterTest extends FunSuite {
     test("test4") {
         val filter = ValueFilter(2, Comparator.LE, IntExpression(30))
         assert(
-            Iterable.range(0, table.lastRow.get + 1).map(
+            Iterable.range(0, table.lastLocalRow.get + 1).map(
                 row => filter.evaluate(row, table)
             ).toList == List(false, false, true, true)
         )
@@ -70,7 +70,7 @@ class RowFilterTest extends FunSuite {
     test("test5") {
         val filter = ValueFilter(2, Comparator.LT, IntExpression(30))
         assert(
-            Iterable.range(0, table.lastRow.get + 1).map(
+            Iterable.range(0, table.lastLocalRow.get + 1).map(
                 row => filter.evaluate(row, table)
             ).toList == List(false, false, true, false)
         )
@@ -79,7 +79,7 @@ class RowFilterTest extends FunSuite {
     test("test6") {
         val filter = ValueFilter(2, Comparator.EQ, StringExpression("hello-world"))
         assert(
-            Iterable.range(0, table.lastRow.get + 1).map(
+            Iterable.range(0, table.lastLocalRow.get + 1).map(
                 row => filter.evaluate(row, table)
             ).toList == List(true, false, false, false)
         )
@@ -88,7 +88,7 @@ class RowFilterTest extends FunSuite {
     test("test7") {
         val filter = ValueFilter(3, Comparator.EQ, StringExpression("hello-world"))
         assert(
-            Iterable.range(0, table.lastRow.get + 1).map(
+            Iterable.range(0, table.lastLocalRow.get + 1).map(
                 row => filter.evaluate(row, table)
             ).toList == List(false, false, false, false)
         )
@@ -97,7 +97,7 @@ class RowFilterTest extends FunSuite {
     test("test8") {
         val filter = ValueFilter(3, Comparator.EQ, StringExpression("goodbye"))
         assert(
-            Iterable.range(0, table.lastRow.get + 1).map(
+            Iterable.range(0, table.lastLocalRow.get + 1).map(
                 row => filter.evaluate(row, table)
             ).toList == List(false, false, true, false)
         )
@@ -106,7 +106,7 @@ class RowFilterTest extends FunSuite {
     test("test9") {
         val filter = EmptinessFilter(3, true)
         assert(
-            Iterable.range(0, table.lastRow.get + 1).map(
+            Iterable.range(0, table.lastLocalRow.get + 1).map(
                 row => filter.evaluate(row, table)
             ).toList == List(true, true, false, false)
         )
@@ -115,7 +115,7 @@ class RowFilterTest extends FunSuite {
     test("test10") {
         val filter = EmptinessFilter(4, false)
         assert(
-            Iterable.range(0, table.lastRow.get + 1).map(
+            Iterable.range(0, table.lastLocalRow.get + 1).map(
                 row => filter.evaluate(row, table)
             ).toList == List(false, false, false, false)
         )
@@ -124,7 +124,7 @@ class RowFilterTest extends FunSuite {
     test("test11") {
         val filter = new AndFilter[ConstantExpression](List())
         assert(
-            Iterable.range(0, table.lastRow.get + 1).map(
+            Iterable.range(0, table.lastLocalRow.get + 1).map(
                 row => filter.evaluate(row, table)
             ).toList == List(true, true, true, true)
         )
@@ -135,7 +135,7 @@ class RowFilterTest extends FunSuite {
             ValueFilter(0, Comparator.GT, IntExpression(60))
         ))
         assert(
-            Iterable.range(0, table.lastRow.get + 1).map(
+            Iterable.range(0, table.lastLocalRow.get + 1).map(
                 row => filter.evaluate(row, table)
             ).toList == List(true, false, false, true)
         )
@@ -147,7 +147,7 @@ class RowFilterTest extends FunSuite {
             ValueFilter(1, Comparator.LT, IntExpression(100))
         ))
         assert(
-            Iterable.range(0, table.lastRow.get + 1).map(
+            Iterable.range(0, table.lastLocalRow.get + 1).map(
                 row => filter.evaluate(row, table)
             ).toList == List(false, false, false, false)
         )
@@ -159,7 +159,7 @@ class RowFilterTest extends FunSuite {
             ValueFilter(2, Comparator.LT, IntExpression(100))
         ))
         assert(
-            Iterable.range(0, table.lastRow.get + 1).map(
+            Iterable.range(0, table.lastLocalRow.get + 1).map(
                 row => filter.evaluate(row, table)
             ).toList == List(false, false, false, true)
         )

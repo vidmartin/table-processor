@@ -12,7 +12,7 @@ final case class EmptinessFilter(
     empty: Boolean
 ) extends RowFilter[ConstantExpression] {
     override def evaluate(row: Int, table: TableView[ConstantExpression]): Boolean = {
-        val cellEmpty = table.get(TableCellPosition(row, column)) match {
+        val cellEmpty = table.getLocal(TableCellPosition(row, column)) match {
             case None => true // TODO: make table.get return TableCell instead of Option[TableCell]
             case Some(TableCell(EmptyExpression)) => true
             case _ => false

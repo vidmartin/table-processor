@@ -20,7 +20,11 @@ class MarkdownTablePrinterTest extends FunSuite {
         val table = new Table[ConstantExpression](new HashMap())
         val printer = new MarkdownTablePrinter(ConstantExpressionFormatter)
         val writer = new InMemoryStringWriter()
-        printer.printTable(table, writer, new AndFilter(List.empty))
+        printer.printTable(
+            TablePrintOptions(
+                table, new AndFilter(Iterable.empty), false, false
+            ), writer
+        )
 
         val lines = writer.get.linesIterator.toArray
         assert(lines.length <= 2)
@@ -36,18 +40,28 @@ class MarkdownTablePrinterTest extends FunSuite {
         ))
         val printer = new MarkdownTablePrinter(ConstantExpressionFormatter)
         val writer = new InMemoryStringWriter()
-        printer.printTable(table, writer, new AndFilter(List.empty))
+        printer.printTable(
+            new TablePrintOptions(
+                table, new AndFilter(Iterable.empty), false, false
+            ), writer
+        )
 
         val lines = writer.get.linesIterator.toArray
-        assert(lines.length == 4 || (lines.length == 5 && lines(4).forall(_.isWhitespace)))
+        assert(lines.length == 3 || (lines.length == 4 && lines(3).forall(_.isWhitespace)))
         
-        val row1cells = lines(2).split(Regex.quote("|"))
-        assert(row1cells.length == 3)
-        assert(row1cells(0) == "78")
-        assert(row1cells(1) == "&nbsp;")
-        assert(row1cells(2) == "hello-world")
+        val row0cells = lines(0).split(Regex.quote("|"))
+        assert(row0cells.length == 3)
+        assert(row0cells(0) == "78")
+        assert(row0cells(1) == "&nbsp;")
+        assert(row0cells(2) == "hello-world")
 
-        val row2cells = lines(3).split(Regex.quote("|"))
+        val row1cells = lines(1).split(Regex.quote("|"))
+        assert(row1cells.length == 3)
+        assert(row1cells(0) == "---")
+        assert(row1cells(1) == "---")
+        assert(row1cells(2) == "---")
+
+        val row2cells = lines(2).split(Regex.quote("|"))
         assert(row2cells.length == 3)
         assert(row2cells(0) == "&nbsp;")
         assert(row2cells(1) == "42")

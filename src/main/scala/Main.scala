@@ -9,17 +9,13 @@ import table.Table
 import evaluation.TopSortTableEvaluator
 import scala.util.Using
 import java.io.PrintStream
-import tablePrinter.CsvTablePrinter
-import tablePrinter.ConstantExpressionFormatter
 import java.io.File
 import scala.Console
 import java.util.stream
 import stringWriter.StringWriter
-import tablePrinter.TableViewWithHeaders
-import tablePrinter.TablePrinter
+import tablePrinter._
 import SupportedFormat.CSV
 import SupportedFormat.MD
-import tablePrinter.MarkdownTablePrinter
 import expression.ConstantExpression
 import expression.Expression
 import table.TableView
@@ -110,10 +106,10 @@ object Main extends App {
         println(f"loading file ${opts.inputFile}")
         val inputTable = getInputTable(opts)
         val resultTable = getResultTable(opts, inputTable)
-        val outputView = getOutputView(opts, resultTable)
+        val printOptions = getPrintOptions(opts, resultTable)
         val tablePrinter = getTablePrinter(opts)
         Using(getOutputStringWriter(opts)) {
-            outputStringWriter => tablePrinter.printTable(outputView, outputStringWriter, new AndFilter(opts.filters))
+            outputStringWriter => tablePrinter.printTable(printOptions, outputStringWriter)
         }
     }
 
@@ -130,13 +126,14 @@ object Main extends App {
         TopSortTableEvaluator.evaluateTable(table)
     }
 
-    def getOutputView[T >: StringExpression <: Expression](opts: Opts, table: Table[T]): TableView[T] = {
-        if (opts.headers) {
-            new TableViewWithHeaders(table)
-        } else {
-            table
-        }
-    }
+    def getPrintOptions(
+        opts: Opts, table: Table[ConstantExpression]
+    ): TablePrintOptions[ConstantExpression] = TablePrintOptions(
+        table, // TODO: range,
+        new AndFilter(opts.filters),
+        opts.headers,
+        opts.headers
+    )
 
     def getTablePrinter(opts: Opts): TablePrinter[ConstantExpression] = {
         opts.format match {
