@@ -21,4 +21,11 @@ final case class TableCellRange(
 
     def width = lowerRight.column + 1 - upperLeft.column
     def height = lowerRight.row + 1 - upperLeft.row
+
+    def contains(pos: TableCellPosition): Boolean = {
+        pos.column >= upperLeft.column &&
+        pos.row >= upperLeft.row &&
+        pos.column <= lowerRight.column &&
+        pos.row <= lowerRight.row
+    }
 }

@@ -10,4 +10,10 @@ abstract class TableView[T <: Expression] {
     def nonEmptyLocalPositions: Iterable[TableCellPosition]
     def getGlobalRow(localRow: Int): Int
     def getGlobalColumn(localColumn: Int): Int
+    def getGlobalPos(localPos: TableCellPosition): TableCellPosition = {
+        TableCellPosition(
+            getGlobalRow(localPos.row),
+            getGlobalColumn(localPos.column),
+        )
+    }
 }
