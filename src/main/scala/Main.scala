@@ -28,6 +28,7 @@ import scala.collection.mutable.ArrayBuffer
 import filters.AndFilter
 import filters.EmptinessFilter
 import cliOpts.optRegister.ColumnPredicateFilterOptRegister
+import table.RangeTableView
 
 object Main extends App {
     def loadOpts(): BaseOpts = {
@@ -129,7 +130,10 @@ object Main extends App {
     def getPrintOptions(
         opts: Opts, table: Table[ConstantExpression]
     ): TablePrintOptions[ConstantExpression] = TablePrintOptions(
-        table, // TODO: range,
+        opts.range match {
+            case Some(range) => new RangeTableView(table, range)
+            case None => table
+        },
         new AndFilter(opts.filters),
         opts.headers,
         opts.headers
