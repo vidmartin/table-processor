@@ -62,9 +62,7 @@ class CsvTablePrinter[T <: Expression](
         destination.writeln(
             Iterable.concat(
                 firstCell.toList,
-                Iterable.range(0, lastColumn + 1).map(
-                    i => contentGetter(i)
-                )
+                Iterable.range(0, lastColumn + 1).map(contentGetter)
             ).mkString(csvConfig.cellSeparator)
         )
     }

@@ -74,10 +74,8 @@ class MarkdownTablePrinter[T <: Expression](
         destination.writeln(
             Iterable.concat(
                 firstCell.toList,
-                Iterable.range(0, lastColumn + 1).map(
-                    i => fixSpaces(contentGetter(i))
-                )
-            ).mkString("|")
+                Iterable.range(0, lastColumn + 1).map(contentGetter)
+            ).map(fixSpaces).mkString("|")
         )
     }
 
