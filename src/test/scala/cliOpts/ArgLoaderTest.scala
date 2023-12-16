@@ -117,6 +117,25 @@ class ArgLoaderTest extends FunSuite {
         }
     }
 
+    test("flags8") {
+        val kit = new FlagsTestKit
+        ArgLoader.load(kit.opts, Array("-ac"))
+        
+        assert(kit.a.optRegister.get == true)
+        assert(kit.b.optRegister.get == false)
+        assert(kit.c.optRegister.get == true)
+    }
+
+    test("flags9") {
+        val kit = new FlagsTestKit
+        ArgLoader.load(kit.opts, Array("-ac", "--beta"))
+        
+        assert(kit.a.optRegister.get == true)
+        assert(kit.b.optRegister.get == true)
+        assert(kit.c.optRegister.get == true)
+    }
+
+
     test("greek1") {
         val kit = new GreekTestKit
 
