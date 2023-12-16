@@ -11,4 +11,5 @@ class FlagOptRegister extends OptRegister[Boolean] {
 
     override def hasValue: Boolean = true
     override def isDefined: Boolean = flagSet
+    override def hasArgs: Boolean = false
 }

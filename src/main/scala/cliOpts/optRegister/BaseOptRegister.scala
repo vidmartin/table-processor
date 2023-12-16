@@ -14,4 +14,6 @@ abstract class BaseOptRegister {
     def hasValue: Boolean
     /** whether a value for this argument is fully defined */
     def isDefined: Boolean
+    /** whether a call to load will advance the passed iterator */
+    def hasArgs: Boolean
 }

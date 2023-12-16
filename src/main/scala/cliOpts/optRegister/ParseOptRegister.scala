@@ -17,4 +17,5 @@ abstract class ParseOptRegister[T] extends OptRegister[T] {
         this.default = Some(default)
         this
     }
+    override def hasArgs: Boolean = true
 }

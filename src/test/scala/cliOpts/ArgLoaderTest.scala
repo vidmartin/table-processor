@@ -43,6 +43,12 @@ class GreekTestKit {
     val nationality = opts.addOption(new CommandLineOption(
         new StringOptRegister().withDefault("Greek"), "nationality", None, ""
     ))
+    val woman = opts.addOption(new CommandLineOption(
+        new FlagOptRegister, "woman", Some('w'), ""
+    ))
+    val unconfirmed = opts.addOption(new CommandLineOption(
+        new FlagOptRegister, "unconfirmed", Some('u'), ""
+    ))
 }
 
 class ArgLoaderTest extends FunSuite {
@@ -82,10 +88,16 @@ class ArgLoaderTest extends FunSuite {
     }
 
     test("flags5") {
-        val kit = new FlagsTestKit
+        assertThrows[UnknownArgException] {
+            ArgLoader.load(new FlagsTestKit().opts, Array("--alpha", "--sigma"))
+        }
 
         assertThrows[UnknownArgException] {
-            ArgLoader.load(kit.opts, Array("--alpha", "--sigma"))
+            ArgLoader.load(new FlagsTestKit().opts, Array("--alpha", "-s"))
+        }
+
+        assertThrows[UnknownArgException] {
+            ArgLoader.load(new FlagsTestKit().opts, Array("--alpha", "-bl"))
         }
     }
 
@@ -175,6 +187,54 @@ class ArgLoaderTest extends FunSuite {
 
         assertThrows[FormatArgException] {
             ArgLoader.load(kit.opts, Array("-p", "Socrates", "--greek-letter", "sigma"))
+        }
+    }
+
+    test("greek9") {
+        val kit = new GreekTestKit
+
+        ArgLoader.load(kit.opts, Array("-p", "Aristotle", "-g", "alpha"))
+
+        assert(kit.philosopherName.optRegister.get == "Aristotle")
+        assert(kit.greekLetter.optRegister.get == GreekLetter.ALPHA)
+        assert(kit.nationality.optRegister.get == "Greek")
+    }
+
+    test("greek10") {
+        val kit = new GreekTestKit
+
+        ArgLoader.load(kit.opts, Array("-wup", "Diotima"))
+
+        assert(kit.philosopherName.optRegister.get == "Diotima")
+        assert(kit.greekLetter.optRegister.getOptional.isEmpty)
+        assert(kit.woman.optRegister.get == true)
+        assert(kit.unconfirmed.optRegister.get == true)
+    }
+
+    test("greek11") {
+        val kit = new GreekTestKit
+
+        assertThrows[IncompleteArgException] {
+            ArgLoader.load(kit.opts, Array("-puw", "Diotima"))
+        }
+    }
+
+    test("greek12") {
+        val kit = new GreekTestKit
+
+        ArgLoader.load(kit.opts, Array("-wp", "Hypatia"))
+
+        assert(kit.philosopherName.optRegister.get == "Hypatia")
+        assert(kit.greekLetter.optRegister.getOptional.isEmpty)
+        assert(kit.woman.optRegister.get == true)
+        assert(kit.unconfirmed.optRegister.get == false)
+    }
+
+    test("greek13") {
+        val kit = new GreekTestKit
+
+        assertThrows[IncompleteArgException] {
+            ArgLoader.load(kit.opts, Array("-pw", "Hypatia"))
         }
     }
 }

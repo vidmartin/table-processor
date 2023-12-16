@@ -38,4 +38,5 @@ class ValueFilterOptRegister(load: ValueFilter => Unit) extends DelegatingOptReg
 
         return new ValueFilter(columnIndex, comparator, value)
     }
+    override def hasArgs: Boolean = true
 }

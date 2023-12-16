@@ -16,4 +16,5 @@ class ColumnPredicateFilterOptRegister(load: Int => Unit) extends DelegatingOptR
 
         TableCellPosition.getColumnIndex(columnS)
     }
+    override def hasArgs: Boolean = true
 }

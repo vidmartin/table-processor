@@ -17,4 +17,5 @@ class RangeOptRegister extends OptRegister[TableCellRange] {
     override def hasValue: Boolean = getOptional.nonEmpty
     override def isDefined: Boolean = getOptional.nonEmpty
     override def getOptional: Option[TableCellRange] = value
+    override def hasArgs: Boolean = true
 }
