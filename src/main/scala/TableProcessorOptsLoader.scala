@@ -21,7 +21,7 @@ object TableProcessorOptsLoader {
         ))
         val format = optsReg.addOption(new CommandLineOption(
             new EnumOptRegister(SupportedFormat).withDefault(SupportedFormat.CSV),
-            "format", None,
+            "format", Some('F'),
             "the format of the output file"
         ))
         val outputSeparator = optsReg.addOption(new CommandLineOption(
@@ -29,7 +29,7 @@ object TableProcessorOptsLoader {
             "the separator to be used for the output file, in case the selected format is CSV"
         ))
         val headers = optsReg.addOption(new CommandLineOption(
-            new FlagOptRegister, "headers", None,
+            new FlagOptRegister, "headers", Some('H'),
             "whether to include header row in the output"
         ))
         val outputFile = optsReg.addOption(new CommandLineOption(
