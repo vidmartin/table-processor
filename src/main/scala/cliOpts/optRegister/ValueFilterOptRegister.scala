@@ -39,4 +39,7 @@ class ValueFilterOptRegister(load: ValueFilter => Unit) extends DelegatingOptReg
         return new ValueFilter(columnIndex, comparator, value)
     }
     override def hasArgs: Boolean = true
+    override def accept[T](visitor: OptRegisterVisitor[T]): T = {
+        visitor.visitValueFilterOptRegister(this)
+    }
 }

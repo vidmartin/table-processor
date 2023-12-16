@@ -74,7 +74,7 @@ object Main extends App {
         }
     }
 
-    TableProcessorOptsLoader.runWithOpts(this.args) {
+    TableProcessorOptsLoader.runWithOpts(this.args, new BasicHelpPrinter()) {
         opts => run(opts)
     }
 }

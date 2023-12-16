@@ -8,4 +8,7 @@ class StringOptRegister extends ParseOptRegister[String] {
     }
 
     override def parse(s: String): String = s
+    override def accept[T](visitor: OptRegisterVisitor[T]): T = {
+        visitor.visitStringOptRegister(this)
+    }
 }

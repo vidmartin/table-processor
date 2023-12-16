@@ -9,5 +9,6 @@ abstract class BaseCommandLineOption(
     def longName: String
     def shortName: Option[Char]
     def description: String
+    def usage: Option[String]
     def isRequired: Boolean
 }

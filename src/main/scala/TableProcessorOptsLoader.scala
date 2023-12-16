@@ -5,15 +5,22 @@ import cliOpts.optRegister._
 import filters._
 import expression._
 import scala.collection.mutable.ArrayBuffer
+import stringWriter.StdoutStringWriter
 
 object TableProcessorOptsLoader {
-    def runWithOpts(args: Iterable[String])(callback: Opts => Unit): Unit = {
+    val programDescription = 
+        "vidmartin's Table Processor\n===========================\n" +
+        "Loads a file describing a table, evaluates expressions therein and outputs the result.\n" +
+        "Accepts only named options as described below. Required options are marked with '!'."
+
+    def runWithOpts(args: Iterable[String], helpPrinter: HelpPrinter)(callback: Opts => Unit): Unit = {
         val optsReg = new OptRegistry
         val filters = new ArrayBuffer[RowFilter[ConstantExpression]]
 
         val inputFile = optsReg.addOption(new RequiredCommandLineOption(
             new StringOptRegister, "input-file", Some('i'),
-            "the path to the file to be processed"
+            "the path to the file to be processed",
+            Some("[FILENAME]")
         ))
         val separator = optsReg.addOption(new CommandLineOption(
             new StringOptRegister().withDefault(","), "separator", None,
@@ -26,7 +33,7 @@ object TableProcessorOptsLoader {
         ))
         val outputSeparator = optsReg.addOption(new CommandLineOption(
             new StringOptRegister().withDefault(","), "output-separator", None,
-            "the separator to be used for the output file, in case the selected format is CSV"
+            "the separator to be used for the output file, in case the selected format is CSV",
         ))
         val headers = optsReg.addOption(new CommandLineOption(
             new FlagOptRegister, "headers", Some('H'),
@@ -34,7 +41,8 @@ object TableProcessorOptsLoader {
         ))
         val outputFile = optsReg.addOption(new CommandLineOption(
             new StringOptRegister, "output-file", Some('o'),
-            "the file to write the output into; if unspecified, write to STDOUT"
+            "the file to write the output into; if unspecified, write to STDOUT",
+            Some("[FILENAME]")
         ))
         val stdout = optsReg.addOption(new CommandLineOption(
             new FlagOptRegister, "stdout", None,
@@ -42,28 +50,28 @@ object TableProcessorOptsLoader {
         ))
         val filter = optsReg.addOption(new CommandLineOption(
             new ValueFilterOptRegister(filters.addOne(_)), "filter", None,
-            "usage: --filter [COLUMN] [OPERATOR] [VALUE]. This option may be specified multiple times. For each occurence of this option, all rows that don't satisfy the given condition will be excluded from the result."
+            "when specified, all rows that don't satisfy the given condition will be excluded from the result (may be specified multiple times)",
         ))
         val filterIsEmpty = optsReg.addOption(new CommandLineOption(
             new ColumnPredicateFilterOptRegister(col => filters.addOne(new EmptinessFilter(col, true))), "filter-is-empty", None,
-            "usage: --filter-is-empty [COLUMN]. When specified, only rows where the given column is empty will be outputted."
+            "when specified, only rows where the given column is empty will be outputted (may be specified multiple times)",
         ))
         val filterIsNotEmpty = optsReg.addOption(new CommandLineOption(
             new ColumnPredicateFilterOptRegister(col => filters.addOne(new EmptinessFilter(col, false))), "filter-is-not-empty", None,
-            "usage: --filter-is-not-empty [COLUMN]. When specified, rows where the given column is empty will be excluded from the result."
+            "when specified, rows where the given column is empty will be excluded from the result (may be specified multiple times)",
         ))
         val range = optsReg.addOption(new CommandLineOption(
             new RangeOptRegister, "range", None,
-            "usage: --range [UPPER LEFT] [LOWER RIGHT]. Only output cells from the given range."
+            "only output cells from the given range",
         ))
         val help = optsReg.addOption(new CommandLineOption(
             new FlagOptRegister, "help", Some('h'),
-            "when specified, don't do anything, just print help and exit"
+            "when specified, don't do anything, just print help and exit",
         ))
 
         if (!ArgLoader.load(optsReg, args, Some(() => help.optRegister.get))) {
-            // TODO: show help
-            throw new NotImplementedError()
+            helpPrinter.printHelp(optsReg, programDescription, new StdoutStringWriter())
+            return
         }
 
         val opts = Opts(

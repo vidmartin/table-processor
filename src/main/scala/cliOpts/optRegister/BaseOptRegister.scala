@@ -16,4 +16,6 @@ abstract class BaseOptRegister {
     def isDefined: Boolean
     /** whether a call to load will advance the passed iterator */
     def hasArgs: Boolean
+    /** implements the visitor pattern */
+    def accept[T](visitor: OptRegisterVisitor[T]): T
 }

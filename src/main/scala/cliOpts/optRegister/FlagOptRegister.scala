@@ -12,4 +12,7 @@ class FlagOptRegister extends OptRegister[Boolean] {
     override def hasValue: Boolean = true
     override def isDefined: Boolean = flagSet
     override def hasArgs: Boolean = false
+    override def accept[T](visitor: OptRegisterVisitor[T]): T = {
+        visitor.visitFlagOptRegister(this)
+    }
 }

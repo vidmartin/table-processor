@@ -1,13 +1,13 @@
 
 package cliOpts
 
-import scala.collection.mutable.{ListBuffer, HashMap}
-import scala.collection.immutable.AbstractSeq
+import scala.collection.immutable.HashMap
 import cliOpt.BaseCommandLineOption
 
 class OptRegistry extends Iterable[BaseCommandLineOption] {
-    private val longNameMap: HashMap[String, BaseCommandLineOption] = new HashMap()
-    private val shortNameMap: HashMap[Char, BaseCommandLineOption] = new HashMap()
+    private var longNameMap: HashMap[String, BaseCommandLineOption] = new HashMap()
+    private var shortNameMap: HashMap[Char, BaseCommandLineOption] = new HashMap()
+    private var allNames: List[(String, Option[Char])] = List.empty
 
     def addOption[T <: BaseCommandLineOption](option: T): T = {
         if (longNameMap.contains(option.longName)) {
@@ -17,12 +17,21 @@ class OptRegistry extends Iterable[BaseCommandLineOption] {
             throw new AlreadyExistsArgException(f"argument -${option.shortName} was already added")
         }
 
-        this.longNameMap.addOne((option.longName, option))
-        option.shortName.foreach(c => shortNameMap.addOne((c, option)))
+        longNameMap = longNameMap.updated(option.longName, option)
+        option.shortName.foreach {
+            c => shortNameMap = shortNameMap.updated(c, option)
+        }
+        allNames = allNames.appended((option.longName, option.shortName))
+
         option
     }
 
     override def iterator: Iterator[BaseCommandLineOption] = longNameMap.valuesIterator
     def getByLongName(longName: String): Option[BaseCommandLineOption] = longNameMap.get(longName)
     def getByShortName(shortName: Char): Option[BaseCommandLineOption] = shortNameMap.get(shortName)
+    def getAll: List[(String, Option[Char], BaseCommandLineOption)] = {
+        allNames.map {
+            case ((longName, shortName)) => (longName, shortName, longNameMap.get(longName).get)
+        }.toList
+    }
 }
