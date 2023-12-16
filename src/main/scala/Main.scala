@@ -1,34 +1,23 @@
 
-import cliOpts.cliOpt.{CommandLineOption, RequiredCommandLineOption}
+import cliOpts._
+import cliOpts.cliOpt._
 import cliOpts.optRegister._
-import tableReader.TableReader
-import tableReader.CsvReader
-import config.CsvConfig
-import scala.io.Source
-import table.Table
+import config._
+import expression._
+import filters._
+import table._
+import tableReader._
+import tablePrinter._
+import stringWriter._
 import evaluation.TopSortTableEvaluator
+import SupportedFormat._
+import scala.io.Source
 import scala.util.Using
 import java.io.PrintStream
 import java.io.File
 import scala.Console
 import java.util.stream
-import stringWriter.StringWriter
-import tablePrinter._
-import SupportedFormat.CSV
-import SupportedFormat.MD
-import expression.ConstantExpression
-import expression.Expression
-import table.TableView
-import expression.StringExpression
-import stringWriter._
-import cliOpts._
-import filters.RowFilter
-import cliOpts.optRegister.ValueFilterOptRegister
 import scala.collection.mutable.ArrayBuffer
-import filters.AndFilter
-import filters.EmptinessFilter
-import cliOpts.optRegister.ColumnPredicateFilterOptRegister
-import table.RangeTableView
 
 object Main extends App {
     def loadOpts(): BaseOpts = {
