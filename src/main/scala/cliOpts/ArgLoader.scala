@@ -6,7 +6,7 @@ import cliOpts.optRegister._
 import cliOpts._
 
 private class ArgLoader(registry: OptRegistry) {
-    def load(args: Array[String], swallowMissingArgs: Option[() => Boolean] = None): Boolean = {
+    def load(args: Iterable[String], swallowMissingArgs: Option[() => Boolean] = None): Boolean = {
         val it = args.iterator
 
         while (it.hasNext) {
@@ -89,7 +89,7 @@ private class ArgLoader(registry: OptRegistry) {
 }
 
 object ArgLoader {
-    def load(registry: OptRegistry, args: Array[String], swallowMissingArgs: Option[() => Boolean] = None): Boolean = {
+    def load(registry: OptRegistry, args: Iterable[String], swallowMissingArgs: Option[() => Boolean] = None): Boolean = {
         new ArgLoader(registry).load(args, swallowMissingArgs)
     }
 }

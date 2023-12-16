@@ -63,7 +63,7 @@ class ArgLoaderTest extends FunSuite {
 
     test("flags2") {
         val kit = new FlagsTestKit
-        ArgLoader.load(kit.opts, new Array(0))
+        ArgLoader.load(kit.opts, Iterable.empty)
 
         assert(kit.a.optRegister.get == false)
         assert(kit.b.optRegister.get == false)
