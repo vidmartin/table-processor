@@ -22,6 +22,17 @@ class Table[T >: EmptyExpression.type <: Expression](content: HashMap[TableCellP
     lazy val lastLocalColumn: Option[Int] = content.keys.iterator.map(pos => pos.column).maxOption
     override def getGlobalColumn(localColumn: Int): Int = localColumn
     override def getGlobalRow(localRow: Int): Int = localRow
+
+    /** get all relevant positions - this returns a superset of whatever is returned by nonEmptyLocalPositions.
+     * For each entry in nonEmptyLocalPositions, all cells referenced by this entry are also included (including empty cells). */
+    final def allRelevantLocalPositions: Iterable[TableCellPosition] = {
+        nonEmptyLocalPositions.flatMap(
+            pos => Iterable.concat(
+                List(pos),
+                getLocal(pos).expr.referencedPositions
+            )
+        ).toSet
+    }
 }
 
 object Table {
