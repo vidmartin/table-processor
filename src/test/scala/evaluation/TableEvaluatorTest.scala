@@ -132,27 +132,40 @@ abstract class TableEvaluatorTest extends FunSuite {
         }
     }
 
-    test("test6 (plain reference to empty cell)") {
+    test("test6 (plain reference to an empty cell)") {
         val table = new Table[Expression](HashMap(
             TableCellPosition.parse("A1").get -> TableCell(EmptyExpression),
             TableCellPosition.parse("B1").get -> TableCell(
                 ReferenceExpression(TableCellPosition.parse("A1").get),
             ),
-            TableCellPosition.parse("B2").get -> TableCell(
-                ReferenceExpression(TableCellPosition.parse("A2").get),
-            )
         ))
 
         val result = evaluator.evaluateTable(table)
 
-        for (cellname <- List("B1", "B2")) {
-            assert(
-                result.getLocal(
-                    TableCellPosition.parse(cellname).get
-                ).map(
-                    cell => cell == TableCell(EmptyExpression)
-                ).getOrElse(true)
-            )
-        }
+        assert(
+            result.getLocal(
+                TableCellPosition.parse("B1").get
+            ).map(
+                cell => cell == TableCell(EmptyExpression)
+            ).getOrElse(true)
+        )
+    }
+
+    test("test7 (plain reference to an unspecified cell)") {
+        val table = new Table[Expression](HashMap(
+            TableCellPosition.parse("B1").get -> TableCell(
+                ReferenceExpression(TableCellPosition.parse("A1").get),
+            ),
+        ))
+
+        val result = evaluator.evaluateTable(table)
+
+        assert(
+            result.getLocal(
+                TableCellPosition.parse("B1").get
+            ).map(
+                cell => cell == TableCell(EmptyExpression)
+            ).getOrElse(true)
+        )
     }
 }

@@ -1,7 +1,7 @@
 package expression
 
 abstract class VariantExpression[T] extends Expression {
-    final override def evaluate(context: ExpressionEvaluationContext): ConstantExpression = {
+    override def evaluate(context: ExpressionEvaluationContext): ConstantExpression = {
         val temp = prepare(context)
         None.orElse(
             getInt(temp).map(IntExpression(_))

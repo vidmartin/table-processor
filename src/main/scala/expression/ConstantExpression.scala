@@ -3,6 +3,8 @@ package expression
 import table.TableCellPosition
 
 abstract class ConstantExpression extends VariantExpression[Unit] {
+    override def evaluate(context: ExpressionEvaluationContext): ConstantExpression = this
+
     def getOne: Option[ConstantExpression] = Some(this)
     override def isAtomic: Boolean = true
     override def referencedPositions: Iterable[TableCellPosition] = Iterable.empty
