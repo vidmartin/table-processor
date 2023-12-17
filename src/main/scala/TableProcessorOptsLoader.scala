@@ -69,7 +69,16 @@ object TableProcessorOptsLoader {
             "when specified, don't do anything, just print help and exit",
         ))
 
-        if (!ArgLoader.load(optsReg, args, Some(() => help.optRegister.get))) {
+        val shouldPrintHelp = try {
+            !ArgLoader.load(optsReg, args, Some(() => help.optRegister.get)) || help.optRegister.get
+        } catch {
+            case e: ArgException => {
+                println(f"\u001b[31mError while parsing args:\n   ${e.getMessage()}\u001b[0m\n")
+                true
+            }
+        }
+
+        if (shouldPrintHelp) {
             helpPrinter.printHelp(optsReg, programDescription, new StdoutStringWriter())
             return
         }

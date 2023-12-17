@@ -9,8 +9,8 @@ class RangeOptRegister extends OptRegister[TableCellRange] {
     override protected def forceLoad(it: Iterator[String]): Unit = {
         value = Some(
             TableCellRange(
-                TableCellPosition.parse(it.next()).get,
-                TableCellPosition.parse(it.next()).get,
+                TableCellPosition.parse(it.next().toUpperCase()).get,
+                TableCellPosition.parse(it.next().toUpperCase()).get,
             )
         )
     }
