@@ -12,8 +12,8 @@ import expression.ExpressionEvaluationContext
 object TopSortTableEvaluator extends BaseTableEvaluator {
     override def evaluateTable(srcTable: Table[Expression]): Table[ConstantExpression] = {
         val graph = NeighborsDirectedGraph.buildFromParents[TableCellPosition](
-            srcTable.nonEmptyLocalPositions,
-            pos => srcTable.getLocal(pos).get.expr.referencedPositions
+            srcTable.allRelevantLocalPositions,
+            pos => srcTable.getLocal(pos).expr.referencedPositions
         )
 
         val sorted = try { TopSorter.topSort(graph) } catch {
@@ -32,7 +32,7 @@ object TopSortTableEvaluator extends BaseTableEvaluator {
 
         val evaluationContext = new ExpressionEvaluationContext {
             def get(pos: TableCellPosition): Expression = {
-                wipTable.getLocal(pos).get.expr
+                wipTable.getLocal(pos).expr
             }
         }
 
@@ -40,7 +40,7 @@ object TopSortTableEvaluator extends BaseTableEvaluator {
             wipTable = wipTable.withSet(
                 posToEvaluate,
                 new TableCell(
-                    srcTable.getLocal(posToEvaluate).get.expr.evaluate(evaluationContext)
+                    srcTable.getLocal(posToEvaluate).expr.evaluate(evaluationContext)
                 )
             )
         }

@@ -2,9 +2,10 @@
 package table
 
 import expression.Expression
+import expression.EmptyExpression
 
-class RangeTableView[T <: Expression](underlying: TableView[T], range: TableCellRange) extends TableView[T] {
-    override def getLocal(pos: TableCellPosition): Option[TableCell[T]] = {
+class RangeTableView[T >: EmptyExpression.type <: Expression](underlying: TableView[T], range: TableCellRange) extends TableView[T] {
+    override def getLocal(pos: TableCellPosition): TableCell[T] = {
         val underlyingPos = TableCellPosition(
             pos.row + range.upperLeft.row,
             pos.column + range.upperLeft.column,
@@ -13,7 +14,7 @@ class RangeTableView[T <: Expression](underlying: TableView[T], range: TableCell
         if (range.contains(underlyingPos)) {
             underlying.getLocal(underlyingPos)
         } else {
-            None
+            TableCell(EmptyExpression)
         }
     }
     override def lastLocalRow: Option[Int] = Some(range.lowerRight.row - range.upperLeft.row)

@@ -9,7 +9,7 @@ import table.TableCellPosition
 import stringWriter.StringWriter
 import filters.RowFilter
 
-class CsvTablePrinter[T <: Expression](
+class CsvTablePrinter[T >: ConstantExpression <: Expression](
     csvConfig: CsvConfig,
     expressionFormatter: ExpressionFormatter[T]
 ) extends TablePrinter[T] {
@@ -44,9 +44,9 @@ class CsvTablePrinter[T <: Expression](
         printRowWith(
             options.tableView,
             destination,
-            j => options.tableView.getLocal(TableCellPosition(row, j)).map(
-                cell => expressionFormatter.format(cell.expr)
-            ).getOrElse(""),
+            j => expressionFormatter.format(
+                options.tableView.getLocal(TableCellPosition(row, j)).expr
+            ),
             if (options.headerColumn) {
                 Some(
                     TableCellPosition.getRowName(options.tableView.getGlobalRow(row))

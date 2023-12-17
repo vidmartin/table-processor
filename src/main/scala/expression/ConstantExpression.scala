@@ -23,6 +23,7 @@ final case object EmptyExpression extends ConstantExpression {
     override def getInt: Option[Int] = None
     override def getFloat: Option[Double] = None
     override def getString: Option[String] = None
+    override def isEmpty: Boolean = true
 }
 final case class IntExpression(value: Int) extends ConstantExpression {
     override def getInt: Option[Int] = Some(value)

@@ -5,6 +5,7 @@ import expression.ConstantExpression
 import table.TableView
 import table.TableCellPosition
 import table.TableCell
+import expression.EmptyExpression
 
 final case class ValueFilter(
     column: Int,
@@ -12,10 +13,7 @@ final case class ValueFilter(
     value: ConstantExpression
 ) extends RowFilter[ConstantExpression] {
     override def evaluate(row: Int, table: TableView[ConstantExpression]): Boolean = {
-        table.getLocal(TableCellPosition(row, column)) match {
-            case None => false
-            case Some(cell) => evalCell(cell)
-        }
+        evalCell(table.getLocal(TableCellPosition(row, column)))
     }
 
     private def evalCell(cell: TableCell[ConstantExpression]): Boolean = {

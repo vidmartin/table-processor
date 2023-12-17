@@ -4,14 +4,20 @@ package table
 import scala.collection.immutable.HashMap
 import tableReader.TableReader
 import expression.Expression
+import expression.EmptyExpression
+import expression.ConstantExpression
 
-class Table[T <: Expression](content: HashMap[TableCellPosition, TableCell[T]]) extends TableView[T] {
-    def getLocal(pos: TableCellPosition): Option[TableCell[T]] = {
-        content.get(pos)
+class Table[T >: EmptyExpression.type <: Expression](content: HashMap[TableCellPosition, TableCell[T]]) extends TableView[T] {
+    def getLocal(pos: TableCellPosition): TableCell[T] = {
+        content.get(pos).getOrElse(TableCell(EmptyExpression.asInstanceOf[T]))
     }
 
     def withSet(pos: TableCellPosition, cell: TableCell[T]) = new Table(content.updated(pos, cell))
-    def nonEmptyLocalPositions: Iterable[TableCellPosition] = content.keys
+    def nonEmptyLocalPositions: Iterable[TableCellPosition] = content.filter {
+        case (pos, TableCell(expr)) => !expr.isEmpty
+    }.map {
+        case (pos, cell) => pos
+    }
     lazy val lastLocalRow: Option[Int] = content.keys.iterator.map(pos => pos.row).maxOption
     lazy val lastLocalColumn: Option[Int] = content.keys.iterator.map(pos => pos.column).maxOption
     override def getGlobalColumn(localColumn: Int): Int = localColumn
@@ -33,5 +39,5 @@ object Table {
         new Table(map)
     }
 
-    def empty[T <: Expression] = new Table[T](HashMap.empty)
+    def empty[T >: ConstantExpression <: Expression] = new Table[T](HashMap.empty)
 }

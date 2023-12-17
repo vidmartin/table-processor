@@ -10,7 +10,7 @@ import table.TableCellPosition
 import expression.EmptyExpression
 import filters.RowFilter
 
-class MarkdownTablePrinter[T <: Expression](
+class MarkdownTablePrinter[T >: ConstantExpression <: Expression](
     expressionFormatter: ExpressionFormatter[T]
 ) extends TablePrinter[T] {
     override def printTable(options: TablePrintOptions[T], destination: StringWriter): Unit = {
@@ -49,9 +49,9 @@ class MarkdownTablePrinter[T <: Expression](
         printRowWith(
             options.tableView,
             destination,
-            j => options.tableView.getLocal(TableCellPosition(row, j)).map(
-                cell => expressionFormatter.format(cell.expr)
-            ).getOrElse(""),
+            j => expressionFormatter.format( 
+                options.tableView.getLocal(TableCellPosition(row, j)).expr
+            ),
             if (options.headerColumn) {
                 Some(
                     TableCellPosition.getRowName(options.tableView.getGlobalRow(row))

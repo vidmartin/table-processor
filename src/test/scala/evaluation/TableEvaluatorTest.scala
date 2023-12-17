@@ -42,13 +42,13 @@ abstract class TableEvaluatorTest extends FunSuite {
 
         val result = evaluator.evaluateTable(table)
 
-        assert(result.getLocal(TableCellPosition.parse("A1").get).isEmpty)
-        assert(result.getLocal(TableCellPosition.parse("B2").get).get == TableCell(IntExpression(7)))
-        assert(result.getLocal(TableCellPosition.parse("D4").get).get == TableCell(IntExpression(6)))
-        assert(result.getLocal(TableCellPosition.parse("E4").get).get == TableCell(IntExpression(29)))
-        assert(result.getLocal(TableCellPosition.parse("E5").get).get == TableCell(IntExpression(42)))
-        assert(result.getLocal(TableCellPosition.parse("F6").get).get == TableCell(IntExpression(13)))
-        assert(result.getLocal(TableCellPosition.parse("Z8").get).isEmpty)
+        assert(result.getLocal(TableCellPosition.parse("A1").get) == TableCell(EmptyExpression))
+        assert(result.getLocal(TableCellPosition.parse("B2").get) == TableCell(IntExpression(7)))
+        assert(result.getLocal(TableCellPosition.parse("D4").get) == TableCell(IntExpression(6)))
+        assert(result.getLocal(TableCellPosition.parse("E4").get) == TableCell(IntExpression(29)))
+        assert(result.getLocal(TableCellPosition.parse("E5").get) == TableCell(IntExpression(42)))
+        assert(result.getLocal(TableCellPosition.parse("F6").get) == TableCell(IntExpression(13)))
+        assert(result.getLocal(TableCellPosition.parse("Z8").get) == TableCell(EmptyExpression))
     }
 
     test("test2") {
@@ -145,9 +145,7 @@ abstract class TableEvaluatorTest extends FunSuite {
         assert(
             result.getLocal(
                 TableCellPosition.parse("B1").get
-            ).map(
-                cell => cell == TableCell(EmptyExpression)
-            ).getOrElse(true)
+            ) == TableCell(EmptyExpression)
         )
     }
 
@@ -163,9 +161,7 @@ abstract class TableEvaluatorTest extends FunSuite {
         assert(
             result.getLocal(
                 TableCellPosition.parse("B1").get
-            ).map(
-                cell => cell == TableCell(EmptyExpression)
-            ).getOrElse(true)
+            ) == TableCell(EmptyExpression)
         )
     }
 }
