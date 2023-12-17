@@ -61,7 +61,7 @@ class ExpressionLexer(val source: String) extends Iterable[Token] {
                 }
                 return IdentifierToken(source.substring(start, index))
             }
-            throw new Exception() // TODO: more specific exception
+            throw new ExpressionParsingException(f"couldn't split expression '${source}' into tokens (error occured at index ${index}, corresponding substring: '${source.substring(index)}')")
         }
     }
 }

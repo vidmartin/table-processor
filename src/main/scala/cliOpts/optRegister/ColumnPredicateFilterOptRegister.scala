@@ -2,6 +2,7 @@
 package cliOpts.optRegister
 
 import table.TableCellPosition
+import cliOpts.FormatArgException
 
 class ColumnPredicateFilterOptRegister(load: Int => Unit) extends DelegatingOptRegister[Int](load) {
     override def getOptional: Option[Int] = {
@@ -11,7 +12,7 @@ class ColumnPredicateFilterOptRegister(load: Int => Unit) extends DelegatingOptR
         val columnS = it.next().toUpperCase()
 
         if (columnS.exists(c => !c.isLetter)) {
-            throw new Exception() // TODO: more specific exception
+            throw new FormatArgException(f"invalid column specification: '${columnS}'")
         }
 
         TableCellPosition.getColumnIndex(columnS)

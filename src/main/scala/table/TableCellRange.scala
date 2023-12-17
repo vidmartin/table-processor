@@ -5,12 +5,8 @@ final case class TableCellRange(
     upperLeft: TableCellPosition,
     lowerRight: TableCellPosition,
 ) {
-    if (upperLeft.column > lowerRight.column) {
-        throw new Exception() // TODO: more specific excepetion
-    }
-
-    if (upperLeft.row > lowerRight.row) {
-        throw new Exception() // TODO: more specific excepetion
+    if (upperLeft.column > lowerRight.column | upperLeft.row > lowerRight.row) {
+        throw new IllegalArgumentException(f"the first position in TableCellRange not be to the right nor to the bottom of the second position!")
     }
 
     def iterRowsColumns: Iterable[TableCellPosition] = Iterable.range(upperLeft.row, lowerRight.row + 1).flatMap(

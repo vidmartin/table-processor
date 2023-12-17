@@ -11,7 +11,7 @@ class NeighborsDirectedGraph[T] private(
 
     private def assertNodeKnown(node: T) {
         if (!nodes.contains(node)) {
-            throw new Exception() // TODO: more specific exception
+            throw new UnknownNodeException(f"node ${node.toString()} is not part of this graph")
         }
     }
 

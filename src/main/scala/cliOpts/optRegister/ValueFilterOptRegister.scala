@@ -9,6 +9,7 @@ import expression.ConstantExpression
 import expression.IntExpression
 import expression.FloatExpression
 import expression.StringExpression
+import cliOpts.FormatArgException
 
 class ValueFilterOptRegister(load: ValueFilter => Unit) extends DelegatingOptRegister[ValueFilter](load) {
     override def getOptional: Option[ValueFilter] = {
@@ -20,12 +21,12 @@ class ValueFilterOptRegister(load: ValueFilter => Unit) extends DelegatingOptReg
         val valueS = it.next()
 
         if (columnS.exists(c => !c.isLetter)) {
-            throw new Exception() // TODO: more specific exception
+            throw new FormatArgException(f"invalid column specification: '${columnS}'")
         }
 
         val columnIndex = TableCellPosition.getColumnIndex(columnS)
         val comparator = Comparator.parse(comparatorS).getOrElse {
-            throw new Exception() // TODO: more specific exception
+            throw new FormatArgException(f"invalid comparator specification: '${comparatorS}'")
         }
 
         val value: ConstantExpression = valueS.toIntOption match {

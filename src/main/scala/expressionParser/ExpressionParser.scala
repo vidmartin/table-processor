@@ -22,7 +22,7 @@ class ExpressionParser(lex: Iterable[Token]) {
     private def expectToken(it: Iterator[Token], tok: Token): Unit = {
         val got = it.next()
         if (got != tok) {
-            throw new Exception(f"expected token ${tok}, got ${got}") // TODO: more specific exception
+            throw new ExpressionParsingException(f"expected token ${tok}, got ${got} instead")
         }
     }
 
@@ -38,7 +38,7 @@ class ExpressionParser(lex: Iterable[Token]) {
                 SubtractExpression(lhs, parseExpressionL1(it))
             }
             case None | Some(KeywordToken(")")) => lhs
-            case what => throw new Exception(f"unexpected ${what}") // TODO: more specific exception
+            case what => throw new ExpressionParsingException(f"unexpected ${what} (parseExpressionL1)")
         }
     }
 
@@ -58,7 +58,7 @@ class ExpressionParser(lex: Iterable[Token]) {
                 ModuloExpression(lhs, parseExpressionL2(it))
             }
             case None | Some(KeywordToken("+" | "-" | ")")) => lhs
-            case what => throw new Exception(f"unexpected ${what}") // TODO: more specific exception
+            case what => throw new ExpressionParsingException(f"unexpected ${what} (parseExpressionL2)")
         }
     }
 
@@ -67,13 +67,13 @@ class ExpressionParser(lex: Iterable[Token]) {
             case IntToken(value) => IntExpression(value)
             case FloatToken(value) => FloatExpression(value)
             case StringToken(value) => StringExpression(value)
-            case IdentifierToken(identifier) => ReferenceExpression(TableCellPosition.parse(identifier).get) // TODO: more specific exception
+            case IdentifierToken(identifier) => ReferenceExpression(TableCellPosition.parse(identifier).get)
             case KeywordToken("(") => {
                 val expr = parseExpressionL1(it)
                 expectToken(it, KeywordToken(")"))
                 expr
             }
-            case what => throw new Exception(f"unexpected ${what}") // TODO: more specific exception
+            case what => throw new ExpressionParsingException(f"unexpected ${what} (parseTerm)")
         }
     }
 }
