@@ -110,8 +110,7 @@ abstract class TableEvaluatorTest extends FunSuite {
             )
         ))
 
-        assertThrows[Exception] {
-            // TODO: more specific exception
+        assertThrows[EmptyOperandException] {
             evaluator.evaluateTable(table)
         }
     }
@@ -126,8 +125,7 @@ abstract class TableEvaluatorTest extends FunSuite {
             )
         ))
 
-        assertThrows[Exception] {
-            // TODO: more specific exception
+        assertThrows[EmptyOperandException] {
             evaluator.evaluateTable(table)
         }
     }

@@ -14,6 +14,9 @@ abstract class ConstantExpression extends VariantExpression[Unit] {
     def getString: Option[String]
 
     final override def prepare(context: ExpressionEvaluationContext): Unit = ()
+    final override def failure(context: Unit): Nothing = {
+        throw new NotImplementedError()
+    }
     final override def getInt(unit: Unit): Option[Int] = getInt
     final override def getFloat(unit: Unit): Option[Double] = getFloat
     final override def getString(unit: Unit): Option[String] = getString

@@ -44,8 +44,7 @@ class ExpressionParserTest extends FunSuite {
             KeywordToken("+"),
             IntToken(8),
         ))
-        assertThrows[Exception] {
-            // TODO: more specific exception
+        assertThrows[ExpressionParsingException] {
             parser.getExpression()
         }
     }

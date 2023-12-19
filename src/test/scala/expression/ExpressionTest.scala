@@ -106,16 +106,14 @@ class ExpressionTest extends FunSuite {
     }
 
     test("test5") {
-        // TODO: more specific exceptions!
-
-        assertThrows[Exception] {
+        assertThrows[IncompatibleOperandsException] {
             DivideExpression(
                 IntExpression(10),
                 StringExpression("asdsad")
             ).evaluate(MockExpressionEvaluationContext)
         }
 
-        assertThrows[Exception] {
+        assertThrows[IncompatibleOperandsException] {
             ModuloExpression(
                 ReferenceExpression(TableCellPosition.parse("C4").get),
                 StringExpression("asdsad")

@@ -9,11 +9,12 @@ abstract class VariantExpression[T] extends Expression {
             getFloat(temp).map(FloatExpression(_))
         ).orElse(
             getString(temp).map(StringExpression(_))
-        ).get
+        ).getOrElse(failure(temp))
     }
 
     def prepare(context: ExpressionEvaluationContext): T
     def getInt(info: T): Option[Int]
     def getFloat(info: T): Option[Double]
     def getString(info: T): Option[String]
+    protected def failure(info: T): Nothing
 }

@@ -18,8 +18,7 @@ class RangeOptRegisterTest extends FunSuite {
 
     test("test2 (incorrect range)") {
         val reg = new RangeOptRegister()
-        assertThrows[Exception] {
-            // TODO: more specific exception
+        assertThrows[IllegalArgumentException] {
             reg.load(List("E5", "A2").iterator)
         }
     }

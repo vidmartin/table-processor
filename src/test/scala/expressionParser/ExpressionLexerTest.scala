@@ -53,8 +53,7 @@ class ExpressionLexerTest extends FunSuite {
 
     test("test5") {
         val lexer = new ExpressionLexer("@ + # - $")
-        assertThrows[Exception] {
-            // TODO: more specific
+        assertThrows[ExpressionParsingException] {
             List.from(lexer)
         }
     }
