@@ -57,7 +57,7 @@ object Main extends App {
 
     def getTablePrinter(opts: Opts): TablePrinter[ConstantExpression] = {
         opts.format match {
-            case CSV => new CsvTablePrinter(CsvConfig(opts.separator), ConstantExpressionFormatter)
+            case CSV => new CsvTablePrinter(CsvConfig(opts.outputSeparator), ConstantExpressionFormatter)
             case MD => new MarkdownTablePrinter(ConstantExpressionFormatter)
             case _ => throw new NotImplementedError()
         }
