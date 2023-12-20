@@ -110,7 +110,7 @@ abstract class TableEvaluatorTest extends FunSuite {
             )
         ))
 
-        assertThrows[EmptyOperandException] {
+        assertThrows[CellExpressionEvaluationException[EmptyOperandException]] {
             evaluator.evaluateTable(table)
         }
     }
@@ -125,7 +125,7 @@ abstract class TableEvaluatorTest extends FunSuite {
             )
         ))
 
-        assertThrows[EmptyOperandException] {
+        assertThrows[CellExpressionEvaluationException[EmptyOperandException]] {
             evaluator.evaluateTable(table)
         }
     }

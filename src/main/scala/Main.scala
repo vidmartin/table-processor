@@ -20,7 +20,6 @@ import java.util.stream
 
 object Main extends App {
     def run(opts: Opts): Unit = {
-        println(f"loading file ${opts.inputFile}")
         val inputTable = getInputTable(opts)
         val resultTable = getResultTable(opts, inputTable)
         val printOptions = getPrintOptions(opts, resultTable)

@@ -8,6 +8,7 @@ import scala.collection.mutable.{HashMap => HashMapMut}
 import expression.Expression
 import expression.ConstantExpression
 import expression.ExpressionEvaluationContext
+import expression.ExpressionException
 
 /** an implementation of BaseTableEvaluator that uses top sort for resolving dependencies between cells */
 object TopSortTableEvaluator extends BaseTableEvaluator {
@@ -38,12 +39,18 @@ object TopSortTableEvaluator extends BaseTableEvaluator {
         }
 
         for (posToEvaluate <- sorted) {
-            wipTable = wipTable.withSet(
-                posToEvaluate,
-                new TableCell(
-                    srcTable.getLocal(posToEvaluate).expr.evaluate(evaluationContext)
+            try {
+                wipTable = wipTable.withSet(
+                    posToEvaluate,
+                    new TableCell(
+                        srcTable.getLocal(posToEvaluate).expr.evaluate(evaluationContext)
+                    )
                 )
-            )
+            } catch {
+                case e: ExpressionException => {
+                    throw new CellExpressionEvaluationException(posToEvaluate, e)
+                }
+            }
         }
         return wipTable
     }

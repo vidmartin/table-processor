@@ -6,16 +6,19 @@ import filters._
 import expression._
 import scala.collection.mutable.ArrayBuffer
 import stringWriter.StdoutStringWriter
+import evaluation.EvaluationException
 
-/** a singleton object for loading CLI opts and then either printing help or passing an instance of Opts to a callback */
+/** responsible for loading CLI opts, displaying help, and showing error messages to the user */
 object TableProcessorOptsLoader {
     val programDescription = 
         "vidmartin's Table Processor\n===========================\n" +
         "Loads a file describing a table, evaluates expressions therein and outputs the result.\n" +
         "Accepts only named options as described below. Required options are marked with '!'."
 
-    /** load CLI opts and then either print help or call callback with a valid Opts instance */
-    def runWithOpts(args: Iterable[String], helpPrinter: HelpPrinter)(callback: Opts => Unit): Unit = {
+    /** load CLI opts and then either print help or call callback with a valid Opts instance;
+     * also catch exceptions thrown by callback and print them to the user
+    */
+    def runWithOpts(args: Iterable[String], helpPrinter: HelpPrinter)(callback: Opts => Unit): Boolean = {
         val optsReg = new OptRegistry
         val filters = new ArrayBuffer[RowFilter[ConstantExpression]]
 
@@ -76,13 +79,13 @@ object TableProcessorOptsLoader {
         } catch {
             case e: ArgException => {
                 println(f"\u001b[31mError while parsing args:\n   ${e.getMessage()}\u001b[0m\n")
-                true
+                return false
             }
         }
 
         if (shouldPrintHelp) {
             helpPrinter.printHelp(optsReg, programDescription, new StdoutStringWriter())
-            return
+            return true
         }
 
         val opts = Opts(
@@ -97,6 +100,14 @@ object TableProcessorOptsLoader {
             range = range.optRegister.getOptional
         )
 
-        callback(opts)
+        try {
+            callback(opts)
+            return true
+        } catch {
+            case e: Exception => {
+                println(f"\u001b[31mError occured (${e.getClass().getName()}):\n   ${e.getMessage()}\u001b[0m\n")
+                return false
+            }
+        }
     }
 }
