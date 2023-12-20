@@ -2,6 +2,7 @@ package expressionParser
 
 import scala.collection.AbstractIterator
 
+/** splits a string into tokens that can be parsed into an AST */
 class ExpressionLexer(val source: String) extends Iterable[Token] {
     val KEYWORDS = Array('+', '-', '*', '/', '%', '(', ')')
 

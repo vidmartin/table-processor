@@ -4,6 +4,7 @@ package cliOpts.optRegister
 import table.TableCellRange
 import table.TableCellPosition
 
+/** loads & stores an option of type TableCellRange (load advances the iterator twice) */
 class RangeOptRegister extends OptRegister[TableCellRange] {
     private var value: Option[TableCellRange] = None
     override protected def forceLoad(it: Iterator[String]): Unit = {

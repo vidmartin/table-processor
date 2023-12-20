@@ -3,6 +3,7 @@ package table
 
 import scala.util.matching.Regex
 
+/** specifies a position of a sigle cell in a table */
 final case class TableCellPosition(row: Int, column: Int) {
     override def toString(): String = {
         f"${TableCellPosition.getColumnName(column)}${TableCellPosition.getRowName(row)}"

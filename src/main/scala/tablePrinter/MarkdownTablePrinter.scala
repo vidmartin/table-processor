@@ -10,6 +10,7 @@ import table.TableCellPosition
 import expression.EmptyExpression
 import filters.RowFilter
 
+/** knows how to print a table using Markdown format */
 class MarkdownTablePrinter[T >: ConstantExpression <: Expression](
     expressionFormatter: ExpressionFormatter[T]
 ) extends TablePrinter[T] {

@@ -5,6 +5,7 @@ import scala.collection.mutable.HashMap
 import cliOpts.optRegister._
 import cliOpts._
 
+/** provides methods for loading args into the given OptRegistry */
 private class ArgLoader(registry: OptRegistry) {
     def load(args: Iterable[String], swallowMissingArgs: Option[() => Boolean] = None): Boolean = {
         val it = args.iterator

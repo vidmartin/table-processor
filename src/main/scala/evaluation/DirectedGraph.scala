@@ -1,6 +1,7 @@
 
 package evaluation
 
+/** represents a directed graph */
 abstract class DirectedGraph[T] {
     def nodes: collection.Set[T]
     def getChildren(node: T): collection.Set[T]

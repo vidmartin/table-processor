@@ -5,6 +5,7 @@ import cliOpts.optRegister._
 import enum.EnumCase
 import filters.Comparator
 
+/** used to get default usage annotations for different types of OptRegisters when printing help */
 object UsageVisitor extends OptRegisterVisitor[Option[String]] {
     def visitColumnPredicateFilterOptRegister(reg: ColumnPredicateFilterOptRegister): Option[String] = {
         Some("[COLUMN]")

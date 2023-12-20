@@ -8,6 +8,7 @@ import filters.RowFilter
 import expression.ConstantExpression
 import expression.EmptyExpression
 
+/** knows how to print a table */
 abstract class TablePrinter[T >: EmptyExpression.type <: Expression] {
     def printTable(
         options: TablePrintOptions[T],

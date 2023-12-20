@@ -9,6 +9,7 @@ import table.TableCellPosition
 import stringWriter.StringWriter
 import filters.RowFilter
 
+/** knows how to print a table using CSV format */
 class CsvTablePrinter[T >: ConstantExpression <: Expression](
     csvConfig: CsvConfig,
     expressionFormatter: ExpressionFormatter[T]

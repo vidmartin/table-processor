@@ -1,6 +1,7 @@
 
 package cliOpts.optRegister
 
+/** loads & stores an option of type String (load only advances the iterator once) */
 class StringOptRegister extends ParseOptRegister[String] {
     override def withDefault(default: String): StringOptRegister = {
         this.default = Some(default)

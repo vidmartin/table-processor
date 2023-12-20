@@ -3,6 +3,7 @@ package evaluation
 
 import scala.collection.mutable.Queue
 
+/** knows how to sort a directed acyclic graph */
 object TopSorter {
     def topSort[T](graph: DirectedGraph[T]): List[T] = {
         val queue = Queue.from(graph.nodes.filter(u => graph.getParents(u).isEmpty))

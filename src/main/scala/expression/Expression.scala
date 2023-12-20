@@ -3,6 +3,7 @@ package expression
 
 import table.TableCellPosition
 
+/** base class for all AST nodes */
 abstract class Expression {
     def evaluate(context: ExpressionEvaluationContext): ConstantExpression
     def referencedPositions: Iterable[TableCellPosition]

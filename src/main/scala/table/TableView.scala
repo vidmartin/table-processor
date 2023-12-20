@@ -4,6 +4,7 @@ package table
 import expression.Expression
 import expression.EmptyExpression
 
+/** an interface providing random access to tabular data */
 abstract class TableView[T >: EmptyExpression.type <: Expression] {
     /** read a cell from the given position relative to this view */
     def getLocal(pos: TableCellPosition): TableCell[T]

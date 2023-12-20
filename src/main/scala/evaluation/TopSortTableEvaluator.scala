@@ -9,6 +9,7 @@ import expression.Expression
 import expression.ConstantExpression
 import expression.ExpressionEvaluationContext
 
+/** an implementation of BaseTableEvaluator that uses top sort for resolving dependencies between cells */
 object TopSortTableEvaluator extends BaseTableEvaluator {
     override def evaluateTable(srcTable: Table[Expression]): Table[ConstantExpression] = {
         val graph = NeighborsDirectedGraph.buildFromParents[TableCellPosition](

@@ -1,6 +1,7 @@
 
 package stringWriter
 
+/** writes strings to multiple different StringWriters */
 class MultiStringWriter(children: Iterable[StringWriter]) extends StringWriter {
     override def write(s: String): Unit = {
         children.foreach(sw => sw.write(s))

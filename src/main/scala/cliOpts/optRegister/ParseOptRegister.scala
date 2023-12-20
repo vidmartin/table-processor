@@ -1,6 +1,7 @@
 
 package cliOpts.optRegister
 
+/** loads & stores an option of type T (load only advances the iterator once) */
 abstract class ParseOptRegister[T] extends OptRegister[T] {
     protected var default: Option[T] = None
     protected var value: Option[T] = None

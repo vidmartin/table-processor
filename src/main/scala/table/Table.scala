@@ -7,6 +7,7 @@ import expression.Expression
 import expression.EmptyExpression
 import expression.ConstantExpression
 
+/** an immutable container for tabular data implementing the TableView interface */
 class Table[T >: EmptyExpression.type <: Expression](content: HashMap[TableCellPosition, TableCell[T]]) extends TableView[T] {
     def getLocal(pos: TableCellPosition): TableCell[T] = {
         content.get(pos).getOrElse(TableCell(EmptyExpression.asInstanceOf[T]))

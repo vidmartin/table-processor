@@ -1,6 +1,7 @@
 
 package table
 
+/** specifies a rectangular area within a table */
 final case class TableCellRange(
     upperLeft: TableCellPosition,
     lowerRight: TableCellPosition,

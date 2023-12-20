@@ -4,6 +4,10 @@ package table
 import expression.Expression
 import expression.EmptyExpression
 
+/** wraps a TableView and provides acces only to a given range within it. 
+ * The A1 cell of a RangeTableView is the same as the cell pointed to by range.upperLeft in the underlying table.
+ * The lower right cell of a RangeTableView is the same as the cell pointed to by range.lowerRight in the underlying table.
+*/
 class RangeTableView[T >: EmptyExpression.type <: Expression](underlying: TableView[T], range: TableCellRange) extends TableView[T] {
     override def getLocal(pos: TableCellPosition): TableCell[T] = {
         val underlyingPos = TableCellPosition(

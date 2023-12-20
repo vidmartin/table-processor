@@ -7,6 +7,7 @@ import expression.IntExpression
 import expression.StringExpression
 import expression.EmptyExpression
 
+/** knows how to convert ConstantExpressions to Strings */
 object ConstantExpressionFormatter extends ExpressionFormatter[ConstantExpression] {
     override def format(expression: ConstantExpression): String = expression match {
         case _: EmptyExpression.type => ""

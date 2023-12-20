@@ -1,6 +1,7 @@
 
 package stringWriter
 
+/** writes strings to its state and provides access to it */
 class InMemoryStringWriter extends StringWriter {
     private val builder = new StringBuilder()
     override def write(s: String): Unit = builder.append(s)

@@ -7,12 +7,14 @@ import expression._
 import scala.collection.mutable.ArrayBuffer
 import stringWriter.StdoutStringWriter
 
+/** a singleton object for loading CLI opts and then either printing help or passing an instance of Opts to a callback */
 object TableProcessorOptsLoader {
     val programDescription = 
         "vidmartin's Table Processor\n===========================\n" +
         "Loads a file describing a table, evaluates expressions therein and outputs the result.\n" +
         "Accepts only named options as described below. Required options are marked with '!'."
 
+    /** load CLI opts and then either print help or call callback with a valid Opts instance */
     def runWithOpts(args: Iterable[String], helpPrinter: HelpPrinter)(callback: Opts => Unit): Unit = {
         val optsReg = new OptRegistry
         val filters = new ArrayBuffer[RowFilter[ConstantExpression]]

@@ -1,6 +1,7 @@
 
 package cliOpts.optRegister
 
+/** a stateful object for loading a value from an iterator and storing it */
 abstract class BaseOptRegister {
     /** parses the value from the iterator of arguments (does nothing if isDefined is true) */
     def load(it: Iterator[String]): Unit = {

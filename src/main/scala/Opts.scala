@@ -3,16 +3,9 @@ import filters.RowFilter
 import expression.ConstantExpression
 import table.TableCellRange
 
-abstract class BaseOpts {
-    def showHelp: Boolean
-}
-
-final object ShowHelpOpts extends BaseOpts {
-    def showHelp: Boolean = true
-}
-
+/** represents the parsed CLI args for this program */
 final case class Opts(
-    inputFile: String, // only mandatory param
+    inputFile: String,
     separator: String,
     format: SupportedFormat,
     outputSeparator: String,
@@ -21,6 +14,4 @@ final case class Opts(
     stdout: Boolean,
     filters: List[RowFilter[ConstantExpression]],
     range: Option[TableCellRange],
-) extends BaseOpts {
-    def showHelp: Boolean = false
-}
+)

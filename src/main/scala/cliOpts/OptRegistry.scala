@@ -4,6 +4,7 @@ package cliOpts
 import scala.collection.immutable.HashMap
 import cliOpt.BaseCommandLineOption
 
+/** a collection of BaseCommandLineOptions indexable by their long names (e.g. --input-file) and possibly short names (e.g. -i) */
 class OptRegistry extends Iterable[BaseCommandLineOption] {
     private var longNameMap: HashMap[String, BaseCommandLineOption] = new HashMap()
     private var shortNameMap: HashMap[Char, BaseCommandLineOption] = new HashMap()

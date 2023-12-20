@@ -7,6 +7,7 @@ import table.TableCellPosition
 import table.TableCell
 import expression.EmptyExpression
 
+/** filters rows based whether the cell at a given column satisfies the given condition */
 final case class ValueFilter(
     column: Int,
     comparator: Comparator,

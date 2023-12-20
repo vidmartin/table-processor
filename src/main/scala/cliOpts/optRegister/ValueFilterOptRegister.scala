@@ -11,6 +11,9 @@ import expression.FloatExpression
 import expression.StringExpression
 import cliOpts.FormatArgException
 
+/** Loads an option of type ValueFilter and instead of storring it, passes it to the function passed in via constructor param.
+ * (Load advances the iterator three times).
+*/
 class ValueFilterOptRegister(load: ValueFilter => Unit) extends DelegatingOptRegister[ValueFilter](load) {
     override def getOptional: Option[ValueFilter] = {
         throw new NotImplementedError()

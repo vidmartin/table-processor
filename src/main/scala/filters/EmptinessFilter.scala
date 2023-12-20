@@ -7,6 +7,7 @@ import table.TableCellPosition
 import expression.EmptyExpression
 import table.TableCell
 
+/** filters rows based on whether or not the cell of the given column is empty */
 final case class EmptinessFilter(
     column: Int,
     empty: Boolean

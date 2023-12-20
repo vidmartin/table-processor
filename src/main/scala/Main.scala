@@ -30,6 +30,7 @@ object Main extends App {
         }
     }
 
+    /** load and return the table to be processed */
     def getInputTable(opts: Opts): Table[Expression] = {
         Using(Source.fromFile(opts.inputFile)) {
             file => {
@@ -39,10 +40,12 @@ object Main extends App {
         }.get
     }
 
+    /* evaluate the given table and return the result */
     def getResultTable(opts: Opts, table: Table[Expression]): Table[ConstantExpression] = {
         TopSortTableEvaluator.evaluateTable(table)
     }
 
+    /** return the TablePrintOptions based on the CLI opts */
     def getPrintOptions(
         opts: Opts, table: Table[ConstantExpression]
     ): TablePrintOptions[ConstantExpression] = TablePrintOptions(
@@ -55,6 +58,7 @@ object Main extends App {
         opts.headers
     )
 
+    /** return a suitable TablePrinter based on the CLI opts */
     def getTablePrinter(opts: Opts): TablePrinter[ConstantExpression] = {
         opts.format match {
             case CSV => new CsvTablePrinter(CsvConfig(opts.outputSeparator), ConstantExpressionFormatter)
@@ -63,6 +67,7 @@ object Main extends App {
         }
     }
 
+    /** return a suitable StringWriter based on the CLI opts */
     def getOutputStringWriter(opts: Opts): StringWriter = {
         (opts.outputFile, opts.stdout) match {
             case (Some(filename), true) => new MultiStringWriter(List(

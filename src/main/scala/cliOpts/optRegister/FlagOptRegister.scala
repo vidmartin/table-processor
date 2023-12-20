@@ -1,6 +1,7 @@
 
 package cliOpts.optRegister
 
+/** stores a boolean, by default false; any call to load will set it to true without advancing the iterator at all */
 class FlagOptRegister extends OptRegister[Boolean] {
     private var flagSet: Boolean = false
 

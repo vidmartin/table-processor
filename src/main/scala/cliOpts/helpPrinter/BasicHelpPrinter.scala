@@ -3,6 +3,7 @@ import cliOpts.OptRegistry
 import stringWriter.StringWriter
 import cliOpts.helpPrinter.UsageVisitor
 
+/** knows how to print information about how to use this program to the user */
 class BasicHelpPrinter extends HelpPrinter {
     def printHelp(registry: OptRegistry, programDescription: String, output: StringWriter): Unit = {
         output.writeln(programDescription)

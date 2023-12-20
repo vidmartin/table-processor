@@ -3,6 +3,7 @@ package stringWriter
 
 import java.io.FileWriter
 
+/** writes strings to a file */
 class FileStringWriter(fileName: String) extends StringWriter {
     val fileWriter = new FileWriter(fileName)
     override def write(s: String): Unit = {

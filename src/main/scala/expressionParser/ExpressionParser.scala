@@ -13,6 +13,7 @@ import expression.MultiplyExpression
 import expression.DivideExpression
 import expression.ModuloExpression
 
+/** constructs an AST from an iterable of tokens (implemented using recursive descent) */
 class ExpressionParser(lex: Iterable[Token]) {
     def getExpression(): Expression = {
         val it = lex.iterator.buffered
